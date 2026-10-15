@@ -1,0 +1,79 @@
+/**
+ * Cebu City Government Portal - About Us Custom Styling
+ */
+
+.about-hero {
+    background: linear-gradient(135deg, #07172C 0%, #0B2545 60%, #134074 100%);
+    color: #FFFFFF;
+    padding: 70px 0;
+    border-bottom: 3px solid #FDB813;
+}
+
+.history-timeline-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    padding: 36px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+}
+
+.leadership-card {
+    background: #FFFFFF;
+    border-radius: 14px;
+    border: 1px solid #E2E8F0;
+    overflow: hidden;
+    height: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.leadership-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(11, 37, 69, 0.12);
+    border-color: #00509D;
+}
+
+.leader-portrait {
+    height: 240px;
+    width: 100%;
+    object-fit: cover;
+    object-position: top center;
+    background: #0B2545;
+}
+
+.leader-body {
+    padding: 20px;
+}
+
+.leader-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 4px;
+}
+
+.leader-position {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #00509D;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.leader-desc {
+    font-size: 0.85rem;
+    color: #64748B;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.mv-card {
+    background: #F8FAFC;
+    border-radius: 12px;
+    padding: 28px;
+    border: 1px solid #E2E8F0;
+    height: 100%;
+}

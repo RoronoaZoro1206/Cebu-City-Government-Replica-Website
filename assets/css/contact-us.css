@@ -1,0 +1,77 @@
+/**
+ * Cebu City Government Portal - Contact Us Custom Styling
+ */
+
+.contact-hero {
+    background: linear-gradient(135deg, #07172C 0%, #0B2545 60%, #134074 100%);
+    color: #FFFFFF;
+    padding: 60px 0;
+    border-bottom: 3px solid #FDB813;
+}
+
+.hotline-banner-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.hotline-big-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 18px;
+    background: #F8FAFC;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+}
+
+.hotline-big-row:hover {
+    background: #FFFFFF;
+    border-color: #D90429;
+    box-shadow: 0 4px 12px rgba(217, 4, 41, 0.08);
+}
+
+.hotline-big-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(217, 4, 41, 0.1);
+    color: #D90429;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.hotline-big-phone {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0F172A;
+    text-decoration: none;
+}
+
+.hotline-big-phone:hover {
+    color: #D90429;
+}
+
+.feedback-form-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    padding: 32px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.info-box-pill {
+    background: #F8FAFC;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    padding: 18px;
+    margin-bottom: 16px;
+}

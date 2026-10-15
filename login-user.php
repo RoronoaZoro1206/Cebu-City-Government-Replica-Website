@@ -1,39 +1,9 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+/**
+ * Root Login User Handler Proxy
+ * Delegates to auth/login_action.php
+ */
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+declare(strict_types=1);
 
-
-    $username = $_POST["username"] ?? null;
-    $password = $_POST["password"] ?? null;
-
-    if (!$username || !$password) {
-        $_SESSION["error_message"] = "Username and Password are required.";
-        header("Location: login.php");
-        exit();
-    }
-
-    try {
-
-        require_once 'db.php';
-        require_once 'user-models.php';
-        require_once 'validator.php';
-
-        $validate_user = new LoginValidator($username, $password, $pdo);
-        $validate_user->validate_data();
-
-        $_SESSION["user"] = $validate_user->get_user_data();
-
-        header("Location: index.php");
-        die();
-        
-    } catch (PDOException $e) {
-        die("Sql query failed: " . $e->getMessage());
-    }
-
-} else {
-    header("Location: login.php");
-    die();
-}
+require_once __DIR__ . '/auth/login_action.php';

@@ -1,395 +1,399 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+/**
+ * Cebu City Government Portal - Citizen Services Directory & Online Booking
+ */
 
+declare(strict_types=1);
 
-if (!isset($_SESSION["user"])) {
-    header("Location: login.php");
-    exit();
-}
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/helpers.php';
+require_once __DIR__ . '/includes/db.php';
+
+$pageTitle = 'City Services & Departments Directory';
+$customCss = 'assets/css/services.css';
+$customJs = 'assets/js/services.js';
+
+$citizen = current_user();
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Services - Cebu City Government</title>
-    <link rel="icon" type="image/png" href="Images/Cebu City Icon.png" alt="Cebu City Government Favicon Logo">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="services.css">
-</head>
-<body>
-    <!-- Home Section -->
-    <div id="Home" id="back-to-top">
-            <!-- Navigation Bar -->
-            <nav>
-                <!-- Logo of Cebu City Government-->
-                <div class="logo-wrapper">
-                    <a href="index.php">
-                        <!-- Cebu City Icon -->
-                        <img src="Images/Cebu City Icon.png" class="logo2 hidden" alt="Cebu City Header Logo">
-                    </a>
-                    <a href="index.php">
-                        <!-- Cebu City Header -->
-                        <img src="Images/Cebu City Header.png" class="logo hidden" alt="Header Logo">
-                    </a>    
-                </div>
+<!-- Hero Header -->
+<section class="services-hero-header">
+    <div class="container text-center">
+        <span class="badge bg-warning text-dark px-3 py-1 fw-bold text-uppercase mb-2">City Services Catalog</span>
+        <h1 class="fw-bold text-white mb-2">Cebu City Government Services</h1>
+        <p class="text-white-50 mx-auto mb-4" style="max-width: 650px;">
+            Comprehensive guide to municipal permits, health services, social assistance, taxation, and engineering requests across all City Hall departments.
+        </p>
 
-                <!-- Hamburger Menu (For Mobile View) -->
-                <div class="hamburger" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-
-                <!-- Navigation Links -->
-                <ul id="nav-links">
-                    <li class="hidden">
-                        <a href="index.php">Home</a>
-                    </li>
-                    <li class="hidden3">
-                        <a href="services.php">Services</a>
-                    </li>
-                    <li class="hidden3">
-                        <a href="transparency.php">Transparency and Governance</a>
-                    </li>
-                    <li class="hidden2">
-                        <a href="events.php">Events and Announcements</a>
-                    </li>
-                    <li class="hidden2">
-                        <a href="logout.php" class="logout-button">Logout</a>
-                    </li>
-                </ul>
-            </nav>
-    </div> 
-
-    <section> 
-        <div class="container header-text"> 
-            <h1>ONLINE SERVICES</h1>
-        </div>
-    </section>
-    <!-- CARDS -->
-    <div class="services">
-        <!-- Card 1 -->
-        <div class="card">
-            <div class="swiper-container">
-                <div class="swiper-wrapper">
-                    
-                    <div class="swiper-slide"><img src="Images/dmdp main.jpg" alt="DMDP Image 1"></div>
-                    <div class="swiper-slide"><img src="Images/dmdp image2.webp" alt="DMDP Image 2"></div>
-                    <div class="swiper-slide"><img src="Images/dmdp image3.jpg" alt="DMDP Image 3"></div>
-                
-                </div>
-                <!-- Navigation -->
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-            </div>
-            <div class="content">
-                <h2>Department of Manpower Development & Placement (DMDP)</h2>
-                <p>A government agency focused on workforce development, offering skills training, job placement services, and livelihood programs to enhance employment opportunities and support economic growth.</p>
-                <div class="button-container">
-                    <a href="#modal1" class="buttons1">Read More</a>
-                    <a href="#another-link1" class="buttons2">See Service</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="card">
-            <div class="swiper-container">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="Images/ccdrrmo main.jpg" alt="CCDRRMO Image 1"></div>
-                    <div class="swiper-slide"><img src="Images/ccdrrmo image 2.jpg" alt="CCDRRMO Image 2"></div>
-                    <div class="swiper-slide"><img src="Images/ccdrrmo image3.jpg" alt="CCDRRMO Image 3"></div>
-                </div>
-                <!-- Navigation -->
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-            </div>
-            <div class="content">
-                <h2>Cebu City Disaster Risk Reduction and Management Office (CCDRRMO)</h2>
-                <p>A local government office that  ensures disaster preparedness, risk reduction, emergency response, and recovery in Cebu City, focusing on community safety, resilience, and climate change adaptation.</p>
-                <div class="button-container">
-                    <a href="#modal2" class="buttons1">Read More</a>
-                    <a href="#another-link2" class="buttons2">See Service</a>
-                </div>
-            </div>
-        </div>
-        <!-- Card 3 -->
-        <div class="card">
-            <div class="swiper-container">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="Images/chd image.jpg" alt="CHD Image 1"></div>
-                    <div class="swiper-slide"><img src="Images/chd image2.jpg" alt="CHD Image 2"></div>
-                    <div class="swiper-slide"><img src="Images/chd image3.png" alt="CHD Image 3"></div>
-                </div>
-                <!-- Navigation -->
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-            </div>
-            <div class="content">
-                <h2>City Health Department(CHD)</h2>
-                <p>Is responsible for promoting public health by offering services like immunization, disease prevention, sanitation, and health education. It ensures access to quality healthcare, monitors food and water safety, and responds to health emergencies to improve community well-being and safety.</p>
-                <div class="button-container">
-                    <a href="#modal3" class="buttons1">Read More</a>
-                    <a href="#another-link3" class="buttons2">See Service</a>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="swiper-container">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="Images/depw image.jpg" alt="DEPW Image 1"></div>
-                    <div class="swiper-slide"><img src="Images/depw image2.jpg" alt="DEPW Image 2"></div>
-                    <div class="swiper-slide"><img src="Images/depw image3.png" alt="DEPW Image 3"></div>
-                </div>
-                <!-- Navigation -->
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-            </div>
-            <div class="content">
-                <h2>Department of Engineering and Public Works(DEPW)</h2>
-                <p>Is responsible for planning, constructing, and maintaining public infrastructure such as roads, bridges, drainage systems, and public buildings, ensuring safety, quality, and supporting the city's growth and development.</p>
-                <div class="button-container">
-                    <a href="#modal4" class="buttons1">Read More</a>
-                    <a href="#another-link4" class="buttons2">See Service</a>
-                </div>
-            </div>
-        </div>
-
-    </div>
-                                    
-
-                                    <!-- 1. CONTENT OF THE FIRST BUTTON -->
-    <div id="modal1" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="document.getElementById('modal1').style.display='none'">&times;</span>
-            <div class="modal-banner">
-                <p>
-                    <span class="highlighted-sentence">
-                        "Dugang Makat-unan, alang sa Disenting Panginabuhian"
-                    </span>
-                </p>
-                <img src="Images/dmdp mission vision.jpg" alt="DMDP Mission and Vision" class="modal-image">
-                <img src="Images/dmdp list of services.jpg" alt="DMDP List of Services" class="modal-image">
+        <!-- Search Bar -->
+        <div class="mx-auto" style="max-width: 580px;">
+            <div class="input-group input-group-lg shadow-sm">
+                <span class="input-group-text bg-white border-0"><i class='bx bx-search text-muted'></i></span>
+                <input type="text" id="serviceFilterSearch" class="form-control border-0" placeholder="Filter services by keyword (e.g. BPLO, Tax, Medical, Permit)...">
             </div>
         </div>
     </div>
-                                    <!-- 1. CONTENT OF THE SECOND BUTTON -->
-    <div id="another-link1" class="modal">
-        <div class="modal-content1">
-            <span class="close" onclick="document.getElementById('another-link1').style.display='none'">&times;</span>
-            <img src="Images/dmdp.jpg" alt="Logo" class="modal-logo">
-            <h2>DMDP Services</h2>
-            <ol>
-                <li> ACCREDITATION OF EMPLOYERS - BUSINESS ESTABLISHMENTS</li>
-                <li> ACCREDITATION OF EMPLOYERS - RECRUITMENT AGENCY (LOCAL)</li>
-                <li> ACCREDITATION OF EMPLOYERS - OVERSEAS HIRING</li>
-                <li> REQUEST FOR TRAINING - LIVELIHOOD TRAINING / SIMPLE TECHNOLOGIES</li>
-                <li> REQUEST FOR TRAINING - ENROLLMENT FOR TECHNICAL / VOCATIONAL</li>
-                <li> REQUEST FOR ISSUANCE OF CERTIFICATE OF TRAINING</li>
-                <li> REQUEST FOR ISSUANCE OF CERTIFICATE OF NO OBJECTION (OVERSEAS)</li>
-            </ol>
+</section>
+
+<!-- Filter Navigation Tabs -->
+<div class="services-filter-nav py-4 bg-light border-bottom sticky-top" style="top: 56px; z-index: 1020;">
+    <div class="container">
+        <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <button class="nav-link active service-filter-btn" data-category="all">All Departments</button>
+            <button class="nav-link service-filter-btn" data-category="business">Business &amp; Taxes</button>
+            <button class="nav-link service-filter-btn" data-category="health">Health &amp; Medical</button>
+            <button class="nav-link service-filter-btn" data-category="social">Social Welfare</button>
+            <button class="nav-link service-filter-btn" data-category="traffic">Traffic &amp; Transport</button>
+            <button class="nav-link service-filter-btn" data-category="infrastructure">Public Works</button>
+            <button class="nav-link service-filter-btn" data-category="employment">Skills &amp; Jobs</button>
         </div>
     </div>
+</div>
 
-                                    <!-- 2. CONTENT OF THE FIRST BUTTON -->
-    <div id="modal2" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="document.getElementById('modal2').style.display='none'">&times;</span>
-                <div class="modal-banner">
-
-                    <img src="Images/reminder and emergency.png" alt="DMDP Mission and Vision" class="modal-image">
-                    <img src="Images/ccdrrmo pic one.jpg" alt="DMDP Mission and Vision" class="modal-image">
-                    <img src="Images/ccdrrmo pic two.png" alt="DMDP Mission and Vision" class="modal-image">
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- 1. BPLO -->
+            <div class="department-banner-card" id="bplo" data-category="business">
+                <div class="department-header">
+                    <img src="assets/images/bplo.jpg" alt="BPLO Logo" class="department-logo">
+                    <div>
+                        <h4 class="fw-bold mb-1 text-dark">Business Permit and Licensing Office (BPLO)</h4>
+                        <small class="text-muted"><i class='bx bx-map-pin'></i> Ground Floor, Executive Building, Cebu City Hall &bull; bplo@cebucity.gov.ph</small>
+                    </div>
+                </div>
+                <div class="department-body">
+                    <p class="text-muted small mb-3">
+                        Mandated to regulate, evaluate, and issue official permits for commercial entities operating within Cebu City limits under the Local Government Code.
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-plus-circle text-primary me-1'></i> New Business Application</h6>
+                                <p class="small text-muted mb-2">Assessment and issuance of Mayor's Permit for newly established enterprises.</p>
+                                <span class="badge bg-light text-dark border">Requirements: DTI/SEC, Barangay Clearance, Zoning</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-refresh text-success me-1'></i> Annual Permit Renewal</h6>
+                                <p class="small text-muted mb-2">Annual assessment and renewal of business tax licenses every January.</p>
+                                <span class="badge bg-light text-dark border">Online processing available</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-                                    <!-- 2. CONTENT OF THE SECOND BUTTON -->
-    <div id="another-link2" class="modal">
-        <div class="modal-content1">
-            <span class="close" onclick="document.getElementById('another-link2').style.display='none'">&times;</span>
-            <img src="Images/ccdrrmo.jpg" alt="Logo" class="modal-logo">
-            <h2>Cebu City Disaster Risk Riduction and Management Office</h2>
-            <ol>
-                <li> CUTTING OF HAZARD TREES </li>
-                <li> CONDUCT OF TRAINING / DRILL / LECTURE FOR DISASTER PREPAREDNESS </li>
-            </ol>
-        </div>
-    </div>
+            <!-- 2. City Assessor -->
+            <div class="department-banner-card" id="rpt" data-category="business">
+                <div class="department-header">
+                    <img src="assets/images/assessor.jpg" alt="City Assessor Logo" class="department-logo">
+                    <div>
+                        <h4 class="fw-bold mb-1 text-dark">City Assessor's Office &amp; Treasury (Real Property Tax)</h4>
+                        <small class="text-muted"><i class='bx bx-map-pin'></i> 2nd Floor, Legislative Building, Cebu City Hall</small>
+                    </div>
+                </div>
+                <div class="department-body">
+                    <p class="text-muted small mb-3">
+                        Appraises and assesses real properties (land, buildings, and machinery) for fair market taxation and issues certified tax declarations.
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-calculator text-warning me-1'></i> Real Property Tax Clearance</h6>
+                                <p class="small text-muted mb-2">Certification of updated real property tax payments for property transfers and titling.</p>
+                                <span class="badge bg-light text-dark border">Same-day release</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-transfer text-info me-1'></i> Transfer of Property Declaration</h6>
+                                <p class="small text-muted mb-2">Updating ownership records of declared real properties following purchase or inheritance.</p>
+                                <span class="badge bg-light text-dark border">Requires Deed of Sale &amp; Title</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                                    <!-- 3. CONTENT OF THE FIRST BUTTON -->
-    <div id="modal3" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="document.getElementById('modal3').style.display='none'">&times;</span>
-            <div class="modal-banner">
-                                                
-                <img src="Images/chd m & v.png" alt="DMDP Mission and Vision" class="modal-image">
+            <!-- 3. CCMC -->
+            <div class="department-banner-card" id="ccmc" data-category="health">
+                <div class="department-header">
+                    <img src="assets/images/Ccmc logo.png" alt="CCMC Logo" class="department-logo">
+                    <div>
+                        <h4 class="fw-bold mb-1 text-dark">Cebu City Medical Center (CCMC)</h4>
+                        <small class="text-muted"><i class='bx bx-map-pin'></i> N. Bacalso Ave, Cebu City &bull; Emergency Hotline: (032) 255-7141</small>
+                    </div>
+                </div>
+                <div class="department-body">
+                    <p class="text-muted small mb-3">
+                        The premier tertiary hospital operated by the City Government of Cebu, providing subsidized and free medical care to resident Sugboanons.
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-plus-medical text-danger me-1'></i> 24/7 Emergency &amp; Trauma Care</h6>
+                                <p class="small text-muted mb-2">Immediate emergency triage, surgery, and intensive care admissions.</p>
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle">No PhilHealth balance billing</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-stethoscope text-primary me-1'></i> Outpatient Consultations (OPD)</h6>
+                                <p class="small text-muted mb-2">Pediatrics, Internal Medicine, Obstetrics-Gynecology, and General Surgery clinics.</p>
+                                <span class="badge bg-light text-dark border">Mon - Fri: 8:00 AM - 4:00 PM</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a href="assets/pdf/CCMC – Rate of Services.pdf" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class='bx bx-download me-1'></i> Download Complete CCMC Rate of Services PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-                                
+            <!-- 4. City Health Department -->
+            <div class="department-banner-card" id="chd" data-category="health">
+                <div class="department-header">
+                    <img src="assets/images/chd.jpg" alt="CHD Logo" class="department-logo">
+                    <div>
+                        <h4 class="fw-bold mb-1 text-dark">City Health Department (CHD)</h4>
+                        <small class="text-muted"><i class='bx bx-map-pin'></i> General Maxilom Ave. Ext., Cebu City</small>
+                    </div>
+                </div>
+                <div class="department-body">
+                    <p class="text-muted small mb-3">
+                        Coordinates community primary healthcare, 80 barangay health stations, maternal-child immunizations, and sanitary permits.
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-id-card text-success me-1'></i> City Health Card &amp; Sanitation</h6>
+                                <p class="small text-muted mb-2">Sanitation clearance and food-handler medical cards for commercial workers.</p>
+                                <span class="badge bg-light text-dark border">Requires stool/sputum exam</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-injection text-info me-1'></i> Free Child &amp; Adult Immunizations</h6>
+                                <p class="small text-muted mb-2">EPI vaccines, flu vaccines, and anti-rabies bite clinic post-exposure treatment.</p>
+                                <span class="badge bg-light text-dark border">Free at Barangay Centers</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. DSWS -->
+            <div class="department-banner-card" id="dsws" data-category="social">
+                <div class="department-header">
+                    <img src="assets/images/dsws.jpg" alt="DSWS Logo" class="department-logo">
+                    <div>
+                        <h4 class="fw-bold mb-1 text-dark">Department of Social Welfare and Services (DSWS)</h4>
+                        <small class="text-muted"><i class='bx bx-map-pin'></i> Katipunan St., Labangon, Cebu City</small>
+                    </div>
+                </div>
+                <div class="department-body">
+                    <p class="text-muted small mb-3">
+                        Administers welfare benefits, financial assistance, senior citizen pensions, and disaster relief operations for underprivileged constituents.
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-heart text-danger me-1'></i> Senior Citizens &amp; Solo Parents Aid</h6>
+                                <p class="small text-muted mb-2">Bi-monthly cash subsidy distribution for registered elderly and solo parents.</p>
+                                <span class="badge bg-light text-dark border">OSCA registered</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-first-aid text-primary me-1'></i> Burial &amp; Crisis Assistance</h6>
+                                <p class="small text-muted mb-2">Emergency financial assistance for indigent families facing sudden medical or funeral expenses.</p>
+                                <span class="badge bg-light text-dark border">Certificate of Indigency</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. CCTO -->
+            <div class="department-banner-card" id="ccto" data-category="traffic">
+                <div class="department-header">
+                    <img src="assets/images/ccto.jpg" alt="CCTO Logo" class="department-logo">
+                    <div>
+                        <h4 class="fw-bold mb-1 text-dark">Cebu City Transportation Office (CCTO)</h4>
+                        <small class="text-muted"><i class='bx bx-map-pin'></i> Ramos Public Market 2nd Floor, Cebu City &bull; (032) 253-9211</small>
+                    </div>
+                </div>
+                <div class="department-body">
+                    <p class="text-muted small mb-3">
+                        Manages traffic enforcement, vehicle impounding, traffic light synchronization, and special road-use permits across the metropolitan network.
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-receipt text-warning me-1'></i> Citation Ticket Settlement</h6>
+                                <p class="small text-muted mb-2">Payment and adjudication of municipal traffic violations and clamping fees.</p>
+                                <span class="badge bg-light text-dark border">Cashless kiosks accepted</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-car text-danger me-1'></i> Impounded Vehicle Release</h6>
+                                <p class="small text-muted mb-2">Processing of clearances, proof of ownership, and towing fees for vehicle retrieval.</p>
+                                <span class="badge bg-light text-dark border">BRT / Plaza Independencia Yard</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. DEPW -->
+            <div class="department-banner-card" id="depw" data-category="infrastructure">
+                <div class="department-header">
+                    <img src="assets/images/depw.jpg" alt="DEPW Logo" class="department-logo">
+                    <div>
+                        <h4 class="fw-bold mb-1 text-dark">Department of Engineering and Public Works (DEPW)</h4>
+                        <small class="text-muted"><i class='bx bx-map-pin'></i> South Road Properties (SRP), Cebu City</small>
+                    </div>
+                </div>
+                <div class="department-body">
+                    <p class="text-muted small mb-3">
+                        Responsible for city roads, drainage systems, river dredging, flood control infrastructure, and building safety compliance.
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-wrench text-secondary me-1'></i> Drainage &amp; Road Repair Request</h6>
+                                <p class="small text-muted mb-2">Barangay-level unclogging, pothole patching, and culvert installation requests.</p>
+                                <span class="badge bg-light text-dark border">Action within 72 hours</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-bulb text-warning me-1'></i> Street Lighting Maintenance</h6>
+                                <p class="small text-muted mb-2">Repair and LED conversion of public streetlights along municipal thoroughfares.</p>
+                                <span class="badge bg-light text-dark border">Public Hotline 911</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. DMDP -->
+            <div class="department-banner-card" id="dmdp" data-category="employment">
+                <div class="department-header">
+                    <img src="assets/images/dmdp.jpg" alt="DMDP Logo" class="department-logo">
+                    <div>
+                        <h4 class="fw-bold mb-1 text-dark">Department of Manpower Development and Placement (DMDP)</h4>
+                        <small class="text-muted"><i class='bx bx-map-pin'></i> Ramos St., Cebu City</small>
+                    </div>
+                </div>
+                <div class="department-body">
+                    <p class="text-muted small mb-3">
+                        Provides TESDA-accredited vocational livelihood trainings, job placement fairs, and public employment matching for Cebuanos.
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-book-open text-primary me-1'></i> Free Technical &amp; Vocational Courses</h6>
+                                <p class="small text-muted mb-2">Shielded Metal Arc Welding (SMAW), Automotive, Culinary, and Housekeeping courses.</p>
+                                <span class="badge bg-light text-dark border">TESDA NC II Certified</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="service-subcard">
+                                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-briefcase text-success me-1'></i> PESO Job Fairs &amp; Referrals</h6>
+                                <p class="small text-muted mb-2">Connecting local jobseekers with registered employers and international agencies.</p>
+                                <span class="badge bg-light text-dark border">Monthly Job Fairs</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    
-                                    <!-- 3. CONTENT OF THE SECOND BUTTON -->
-    <div id="another-link3" class="modal">
-        <div class="modal-content1">
-            <span class="close" onclick="document.getElementById('another-link3').style.display='none'">&times;</span>
-            <img src="Images/chd.jpg" alt="Logo" class="modal-logo">
-            <h2>City Health Services</h2>
-            <ol>
-                <li> SANITARY PERMIT NON-FOOD</li>
-                <li> SANITARY PERMIT NON-FOOD RENEWAL</li>
-                <li> REQUEST FOR WATER ANALYSIS</li>
-                <li> REQUEST FOR SANITARY INSPECTION</li>
-            </ol>
-        </div>
-    </div>
 
-                                            <!-- 4. CONTENT OF THE FIRST BUTTON -->
-    <div id="modal4" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="document.getElementById('modal4').style.display='none'">&times;</span>
-            <div class="modal-banner">
-                                                
-                <img src="Images/depw m and v.png" alt="DMDP Mission and Vision" class="modal-image">
+        <!-- Right Column: Online Appointment Booking Box -->
+        <div class="col-lg-4" id="appointment">
+            <div class="appointment-booking-box sticky-top" style="top: 140px;">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <i class='bx bx-calendar-check fs-2 text-warning'></i>
+                    <div>
+                        <h4 class="fw-bold mb-0 text-white">Book Appointment</h4>
+                        <small class="text-white-50">Skip the queue at City Hall</small>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-                                    <!-- 4. CONTENT OF THE SECOND BUTTON -->
-    <div id="another-link4" class="modal">
-        <div class="modal-content1">
-            <span class="close" onclick="document.getElementById('another-link4').style.display='none'">&times;</span>
-            <img src="Images/depw.jpg" alt="Logo" class="modal-logo">
-            <h2>DEPW Services</h2>
-            <ol>
-                <li> REQUEST FOR ASPHALTING OF ROADS</li>
-                <li> REQUEST FOR CONCRETING OF ROADS</li>
-                <li> REQUEST FOR DE-CLOGGING OF DRAINAGE CANALS</li>
-                <li> REQUEST FOR INSTALLATION OF FOOTPATHS</li>
-                <li> REQUEST FOR PATCHING OF POT HOLES</li>
-                <li> REQUEST FOR PROVISION OF SURVEY PLAN / PROFILE CROSS-SECTION TO ST</li>
-                <li> REQUEST FOR REPLACEMENT OF MANHOLE, CANAL COVERS</li>
-                <li> REQUEST FOR RETREADING OF ROADS</li>
-            </ol>
-        </div>
-    </div>
-
-    <!-- Footer Section -->
-    <footer class="hidden2">
-        <div class="row">
-            <!-- Column 1: Footer Logo and Description -->
-            <div class="col">
-                <!-- Logo -->
-                <img src="Images/Cebu City Icon.png" class="logo-footer hidden" alt="Footer Cebu City Government Logo">
-                <!-- Description -->
-                <p class="hidden">
-                    Committed to fostering a community of growth and unity, we strive to deliver services with integrity and innovation. 
-                    Together, we build a brighter future for Cebu City.
+                <p class="small text-white-50 mb-3">
+                    Select your preferred department and timeslot. You will immediately receive an official reference code to present at the desk.
                 </p>
-            </div>
 
-            <!-- Column 2: Office Information -->
-            <div class="col">
-                <h3 class="hidden3">
-                    Office
-                    <div class="underline"><span></span></div>
-                </h3>
-                <!-- Address -->
-                <p class="hidden3">Dr Jose P. Rizal St., Santo Niño</p>
-                <p class="hidden3">6000, Cebu City, Cebu, Philippines</p>
-                <!-- Email -->
-                <p class="email-id hidden3">
-                    <a href="mailto:cityadmin@cebucity.gov.ph">cityadmin@cebucity.gov.ph</a>
-                </p>
-                <!-- Phone Number -->
-                <h6 class="fw-bold fs-7 hidden3">
-                    <a href="tel:+6324110100">(+632) 411 0100</a>
-                </h6>
-            </div>
+                <form id="appointmentForm">
+                    <div class="mb-3">
+                        <label class="form-label text-white small fw-bold">Full Citizen Name</label>
+                        <input type="text" name="citizen_name" class="form-control" placeholder="e.g. Maria Santos" value="<?= e($citizen['user_username'] ?? ''); ?>" required>
+                    </div>
 
-            <!-- Column 3: Quick Links -->
-            <div class="col">
-                <h3 class="hidden3">
-                    Links
-                    <div class="underline"><span></span></div>
-                </h3>
-                <!-- Links List -->
-                <ul>
-                    <li class="hidden3"><a href="index.php">Home</a></li>
-                    <li class="hidden3"><a href="about-us.php">About Us</a></li>
-                    <li class="hidden3"><a href="services.php">Services</a></li>
-                    <li class="hidden3"><a href="contact-us.php">Transparency and Governance</a></li>
-                    <li class="hidden3"><a href="transparency.php">Events and Announcements</a></li>
-                    <li class="hidden3"><a href="contact-us.php">Contact Us</a></li>
-                </ul>
-            </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white small fw-bold">Email Address</label>
+                        <input type="email" name="email" class="form-control" placeholder="name@example.com" value="<?= e($citizen['user_email'] ?? ''); ?>" required>
+                    </div>
 
-            <!-- Column 4: Newsletter update -->
-            <div class="col">
-                <h3 class="hidden2">
-                    Newsletter
-                    <div class="underline"><span></span></div>
-                </h3>
-                <!-- Newsletter Form -->
-                <form class="hidden2">
-                    <!-- Email Input -->
-                    <i class='bx bx-envelope'></i>
-                    <input type="email" class="hidden2" placeholder="Enter your email address" required>
-                    <button type="submit">
-                        <i class='bx bxs-right-arrow-alt'></i>
+                    <div class="mb-3">
+                        <label class="form-label text-white small fw-bold">Mobile Phone Number</label>
+                        <input type="tel" name="phone" class="form-control" placeholder="0917-000-0000" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-white small fw-bold">Select Department / Service</label>
+                        <select name="service" class="form-select" required>
+                            <option value="">-- Choose City Service --</option>
+                            <option value="BPLO - Business Permit Application">BPLO - Business Permit Application</option>
+                            <option value="BPLO - Business Permit Renewal">BPLO - Business Permit Renewal</option>
+                            <option value="City Assessor - Real Property Tax Assessment">City Assessor - Real Property Tax Assessment</option>
+                            <option value="CCMC - Outpatient Medical Consultation">CCMC - Outpatient Medical Consultation</option>
+                            <option value="City Health - Health Card &amp; Sanitation">City Health - Health Card &amp; Sanitation</option>
+                            <option value="Civil Registrar - Birth / Marriage Certificates">Civil Registrar - Birth / Marriage Certificates</option>
+                            <option value="CCTO - Traffic Violation Clearance">CCTO - Traffic Violation Clearance</option>
+                            <option value="DSWS - Social Financial Assistance">DSWS - Social Financial Assistance</option>
+                            <option value="DEPW - Building &amp; Infrastructure Clearance">DEPW - Building &amp; Infrastructure Clearance</option>
+                        </select>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label text-white small fw-bold">Preferred Date</label>
+                            <input type="date" name="date" class="form-control" min="<?= date('Y-m-d'); ?>" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-white small fw-bold">Timeslot</label>
+                            <select name="time" class="form-select" required>
+                                <option value="8:30 AM - 10:00 AM">8:30 AM - 10:00 AM</option>
+                                <option value="10:00 AM - 11:30 AM">10:00 AM - 11:30 AM</option>
+                                <option value="1:00 PM - 2:30 PM">1:00 PM - 2:30 PM</option>
+                                <option value="2:30 PM - 4:00 PM">2:30 PM - 4:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-white small fw-bold">Additional Notes (Optional)</label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="Specific documents or inquiry details..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-gold w-100 py-2 fw-bold">
+                        <i class='bx bx-calendar-check me-1'></i> Confirm City Hall Appointment
                     </button>
                 </form>
-                <!-- Social Media Icons -->
-                <div class="social-icons hidden2">
-                    <i class='bx bxl-gmail'></i>
-                    <i class='bx bxl-facebook'></i>
-                    <i class='bx bxl-instagram-alt'></i>
-                    <i class='bx bxl-twitter'></i>
-                </div>
+
+                <div id="appointmentResult" style="display: none;"></div>
             </div>
         </div>
-        <hr>
-        <!-- Footer Copyright -->
-        <p class="copyright hidden3">© 2024-2025 Cebu City Government. All rights reserved.</p>
-    </footer>
-    
-      <!-- SWIPER JS -->
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    </div>
+</div>
 
-    <!-- Link to the javascript for additional functionality -->
-    <script src="services.js"></script>
-
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-    <script>
-        document.querySelectorAll('.swiper-container').forEach(swiper => {
-            new Swiper(swiper, {
-                loop: true,
-                autoplay: {
-                    delay: 3000, 
-                    disableOnInteraction: false,
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-            });
-        });
-    </script>
-    
-    <!-- Back to top icon-->
-    <a id="back-to-top" href="#"><i class='bx bx-arrow-to-top'></i></a>
-
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

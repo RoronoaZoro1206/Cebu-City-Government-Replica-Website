@@ -1,0 +1,513 @@
+/**
+ * Cebu City Government Portal - Core Design System & Theme
+ * Follows UI/UX Pro Max Guidelines:
+ * - Cebu City Civic Identity Palette (Navy #0B2545, Royal #134074, Sun Gold #FDB813, Slate #F8FAFC)
+ * - Modern Typography Pairing (Inter for body & data, Outfit for civic headlines)
+ * - Accessible Contrast Ratios (WCAG 2.1 AA Compliant)
+ * - Micro-interactions, glassmorphism, responsive navigation & high-contrast mode
+ */
+
+:root {
+    --civic-navy: #0B2545;
+    --civic-navy-dark: #07172C;
+    --civic-navy-light: #134074;
+    --civic-blue: #00509D;
+    --civic-blue-soft: #EEF4FA;
+    --civic-gold: #FDB813;
+    --civic-gold-hover: #E0A00A;
+    --civic-gold-soft: #FFF9E6;
+    --civic-red: #D90429;
+    --civic-green: #059669;
+    --civic-dark: #0F172A;
+    --civic-slate: #334155;
+    --civic-muted: #64748B;
+    --civic-bg: #F8FAFC;
+    --civic-card-bg: #FFFFFF;
+    --civic-border: #E2E8F0;
+    --civic-radius: 12px;
+    --civic-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+    --civic-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --civic-shadow-lg: 0 10px 25px -3px rgba(11, 37, 69, 0.1), 0 4px 6px -4px rgba(11, 37, 69, 0.05);
+    --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Base resets & typography */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--civic-slate);
+    background-color: var(--civic-bg);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+body.large-font {
+    font-size: 1.125rem;
+}
+
+/* High Contrast Mode */
+body.high-contrast {
+    --civic-bg: #000000;
+    --civic-card-bg: #121212;
+    --civic-dark: #FFFFFF;
+    --civic-slate: #E2E8F0;
+    --civic-muted: #CBD5E1;
+    --civic-border: #475569;
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+}
+
+body.high-contrast .civic-card,
+body.high-contrast .civic-modal,
+body.high-contrast .dropdown-menu {
+    background-color: #1A1A1A !important;
+    color: #FFFFFF !important;
+    border-color: #FDB813 !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--civic-dark);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* Philippine Standard Time & GovPH Topbar */
+.govph-topbar {
+    background-color: var(--civic-navy-dark);
+    color: #CBD5E1;
+    font-size: 0.8125rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.govph-brand {
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+.text-gold {
+    color: var(--civic-gold) !important;
+}
+
+.text-muted-ph {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.pst-clock-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.07);
+    padding: 2px 10px;
+    border-radius: 20px;
+}
+
+.pst-clock-wrapper i {
+    color: var(--civic-gold);
+}
+
+.a11y-btn {
+    border-radius: 4px;
+    font-size: 0.75rem;
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.a11y-btn:hover {
+    background-color: var(--civic-gold);
+    color: var(--civic-navy-dark);
+    border-color: var(--civic-gold);
+}
+
+/* Civic Branding Header */
+.civic-branding-header {
+    background: linear-gradient(135deg, var(--civic-navy) 0%, var(--civic-navy-light) 100%);
+    border-bottom: 2px solid var(--civic-gold);
+    color: #FFFFFF;
+}
+
+.brand-seal {
+    height: 64px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}
+
+.brand-titles {
+    line-height: 1.2;
+}
+
+.brand-sub {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--civic-gold);
+    text-transform: uppercase;
+}
+
+.brand-main {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 2px 0;
+    color: #FFFFFF;
+    letter-spacing: 0.02em;
+}
+
+.brand-tagline {
+    font-size: 0.75rem;
+    color: #E2E8F0;
+    font-style: italic;
+}
+
+/* Emergency Command Badge */
+.emergency-badge {
+    background: rgba(217, 4, 41, 0.15);
+    border: 1px solid rgba(217, 4, 41, 0.4);
+    padding: 6px 14px;
+    border-radius: 30px;
+}
+
+.pulse-dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--civic-red);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(217, 4, 41, 0.7);
+    animation: pulse-ring 1.8s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+@keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(217, 4, 41, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(217, 4, 41, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(217, 4, 41, 0); }
+}
+
+.badge-title {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #FF8A8A;
+    letter-spacing: 0.08em;
+}
+
+.badge-num {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #FFFFFF;
+}
+
+/* Quick Search Button */
+.btn-search-trigger {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #E2E8F0;
+    padding: 7px 16px;
+    border-radius: 24px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-search-trigger:hover {
+    background: rgba(255, 255, 255, 0.22);
+    color: #FFFFFF;
+    border-color: var(--civic-gold);
+}
+
+.btn-search-trigger kbd {
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--civic-gold);
+    font-size: 0.7rem;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+/* Civic Navbar */
+.civic-navbar {
+    background: rgba(11, 37, 69, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    padding: 0;
+}
+
+.civic-navbar .nav-link {
+    color: #E2E8F0;
+    font-weight: 500;
+    font-size: 0.925rem;
+    padding: 14px 16px !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.civic-navbar .nav-link:hover,
+.civic-navbar .nav-link:focus {
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.civic-navbar .nav-link.active {
+    color: var(--civic-gold) !important;
+    font-weight: 600;
+    border-bottom: 3px solid var(--civic-gold);
+    background: rgba(253, 184, 19, 0.08);
+}
+
+/* Buttons & Badges */
+.btn-gold {
+    background: linear-gradient(135deg, var(--civic-gold) 0%, var(--civic-gold-hover) 100%);
+    color: var(--civic-navy-dark);
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-gold:hover {
+    background: linear-gradient(135deg, #FFC533 0%, var(--civic-gold) 100%);
+    color: var(--civic-navy-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(253, 184, 19, 0.35);
+}
+
+.btn-outline-portal {
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #FFFFFF;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-portal:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--civic-gold);
+    border-color: var(--civic-gold);
+}
+
+.btn-citizen-user {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
+    border-radius: 30px;
+    padding: 4px 12px;
+}
+
+.avatar-circle {
+    width: 28px;
+    height: 28px;
+    background: var(--civic-gold);
+    color: var(--civic-navy-dark);
+    font-weight: 800;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.civic-badge-gold {
+    background-color: var(--civic-gold);
+    color: var(--civic-navy-dark);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    vertical-align: middle;
+}
+
+/* Modals & Search Suggestions */
+.civic-modal {
+    border-radius: var(--civic-radius);
+    overflow: hidden;
+    box-shadow: var(--civic-shadow-lg);
+    border: 1px solid var(--civic-border);
+}
+
+.search-bar-modal input {
+    font-size: 1.1rem;
+    padding: 14px 10px;
+}
+
+.search-suggestions a {
+    transition: all 0.2s ease;
+}
+
+.search-suggestions a:hover {
+    background-color: var(--civic-blue-soft) !important;
+    border-color: var(--civic-blue) !important;
+    color: var(--civic-blue) !important;
+}
+
+.search-results-list {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.search-result-item {
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    display: block;
+    text-decoration: none;
+    color: var(--civic-dark);
+    transition: all 0.15s ease;
+}
+
+.search-result-item:hover {
+    background: var(--civic-blue-soft);
+    border-color: var(--civic-blue);
+    transform: translateX(4px);
+}
+
+/* Flash alerts */
+.civic-alert {
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: var(--civic-shadow-sm);
+}
+
+/* Emergency strip & Footers */
+.civic-emergency-strip {
+    background: #7F1D1D;
+    border-top: 1px solid #991B1B;
+    border-bottom: 1px solid #991B1B;
+}
+
+.emergency-icon-circle {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hotline-mini-card {
+    background: rgba(0, 0, 0, 0.25);
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hotline-dept {
+    display: block;
+    font-size: 0.7rem;
+    color: #FECACA;
+    font-weight: 600;
+}
+
+.hotline-phone {
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.hotline-phone:hover {
+    color: var(--civic-gold);
+}
+
+.civic-footer {
+    background-color: var(--civic-navy-dark);
+    color: #E2E8F0;
+}
+
+.civic-footer-links a {
+    color: #94A3B8;
+    text-decoration: none;
+    line-height: 2;
+    transition: color 0.15s ease;
+}
+
+.civic-footer-links a:hover {
+    color: var(--civic-gold);
+    text-decoration: underline;
+}
+
+.social-btn {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.social-btn:hover {
+    background: var(--civic-gold);
+    color: var(--civic-navy-dark);
+    transform: translateY(-2px);
+}
+
+.hover-gold:hover {
+    color: var(--civic-gold) !important;
+}
+
+/* Floating Back-to-Top Button */
+.btn-back-to-top {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 46px;
+    height: 46px;
+    background: var(--civic-navy);
+    color: var(--civic-gold);
+    border: 2px solid var(--civic-gold);
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    z-index: 1040;
+    transition: all 0.2s ease;
+}
+
+.btn-back-to-top:hover {
+    background: var(--civic-gold);
+    color: var(--civic-navy-dark);
+    transform: translateY(-3px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .brand-main {
+        font-size: 1.1rem;
+    }
+    .brand-tagline {
+        display: none;
+    }
+    .civic-navbar .nav-link {
+        padding: 10px 14px !important;
+        border-bottom: none;
+        border-left: 3px solid transparent;
+    }
+    .civic-navbar .nav-link.active {
+        border-left: 3px solid var(--civic-gold);
+        border-bottom: none;
+    }
+}

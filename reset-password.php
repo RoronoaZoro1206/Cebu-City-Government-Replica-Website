@@ -1,154 +1,88 @@
 <?php
+/**
+ * Cebu City Government Portal - Reset Password Form
+ */
 
-require_once 'db.php';
+declare(strict_types=1);
 
-if (session_status() === PHP_SESSION_NONE) {
-  session_start();
-}
+require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/security.php';
+require_once __DIR__ . '/includes/helpers.php';
 
-$token = $_GET['token'] ?? '';
-$cleanup = ['cleared' => 0, 'currentTime' => 'unknown'];
+$token = trim((string)($_GET['token'] ?? ''));
 
-$logFile = __DIR__ . '/cleanup-log.txt';
-if (file_exists($logFile)) {
-    $lines = file($logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $lines = array_reverse($lines);
-    foreach ($lines as $line) {
-        if (strpos($line, 'Cleaned') !== false && 
-        preg_match('/\[(.*?)\]\s+Cleaned\s+(\d+)\s+expired token\(s\)/', $line, $matches)
-        && intval($matches[2]) > 0) {
-            $cleanup['currentTime'] = $matches[1];
-            $cleanup['cleared'] = $matches[2];
-            break;
-        }
+$isValid = false;
+$username = '';
+
+if (!empty($token)) {
+    $now = date('Y-m-d H:i:s');
+    $stmt = $pdo->prepare("SELECT user_id, user_username FROM users WHERE user_reset_token = ? AND user_token_expiry > ? LIMIT 1");
+    $stmt->execute([$token, $now]);
+    $user = $stmt->fetch();
+    if ($user) {
+        $isValid = true;
+        $username = $user['user_username'];
     }
 }
 
-function showTokenErrorPage($message, $errorCode = 'expired_token') {
-  global $cleanup;
-
-  header("Refresh: 10; URL=forgot-password.php?error=" . urlencode($errorCode));
-  header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-  header("Pragma: no-cache");
-
-  echo '
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <title>' . htmlspecialchars($message) . '</title>
-      <link rel="stylesheet" href="authentication.css">
-      <meta http-equiv="refresh" content="10;url=forgot-password.php?error=' . urlencode($errorCode) . '">
-      <style>
-          body {
-              background: linear-gradient(135deg, #2980b9, #8e44ad, #2c3e50);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 100vh;
-              margin: 0;
-              font-family: "Poppins", sans-serif;
-          }
-      </style>
-      
-  </head>
-  <body>
-      <div class="message-box">
-          <div class="alert-icon">⚠️</div>
-          <div class="alert-title">' . htmlspecialchars($message) . '</div>
-          <div class="success-message">
-            ✅ <strong>' . $cleanup['cleared'] . '</strong> expired reset token(s) were successfully cleared at <strong>' . $cleanup['currentTime'] . '</strong>.
-          </div>
-          <div class="redirect-note" role="alert" aria-live="polite">
-            <span class="spinner"></span>
-            Redirecting you to request a new one in 
-            <span id="countdown-number">10</span> second(s)...
-          </div>
-      </div>
-  <script>
-    let countdown = 10;
-    const numberEl = document.getElementById("countdown-number");
-
-    const interval = setInterval(() => {
-      countdown--;
-      if (countdown <= 0) {
-        clearInterval(interval);
-        window.location.href = "forgot-password.php?error=" + "<?php echo urlencode($errorCode); ?>";
-      } else {
-        numberEl.textContent = countdown;
-        numberEl.style.animation = "none";
-        numberEl.offsetHeight; 
-        numberEl.style.animation = "scaleDown 0.3s ease-in-out";
-      }
-    }, 1000);
-  </script>
-
-  </body>
-  </html>
-  ';
-  exit();
-}
-
-if (!isset($_GET['token'])) {
-  showTokenErrorPage('Reset Link Expired – Token Removed', 'missing_token');
-
-}
-
-$token = $_GET['token'];
-
-$stmt = $pdo->prepare("SELECT * FROM users WHERE user_reset_token = :token ORDER BY user_id ASC");
-$stmt->execute(['token' => $token]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$user) {
-  showTokenErrorPage('Reset Link Expired – Token Removed', 'invalid_token');
-
-}
-
-$currentTime = date('Y-m-d H:i:s');
-if (empty($user['user_token_expiry']) || $user['user_token_expiry'] < $currentTime) {
-    $update = $pdo->prepare("UPDATE users SET user_reset_token = NULL, user_token_expiry = NULL WHERE user_id = :id");
-    $update->execute(['id' => $user['user_id']]);
-    showTokenErrorPage('Reset Link Expired – Token Removed', 'expired_token');
-}
+$pageTitle = 'Reset Account Password';
+$customCss = 'assets/css/authentication.css';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Reset Password</title>
-  <link rel="stylesheet" type="text/css" href="authentication.css">
-</head>
-<body>
-  <div class="center">
-    <h1>Reset Password</h1>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <img src="assets/images/Cebu City Icon.png" alt="Cebu City Seal" class="auth-seal">
+            <h3>Reset Password</h3>
+            <p>Create a secure new password for your account</p>
+        </div>
 
-    <?php if (isset($_SESSION['reset_error'])): ?>
-      <div class="error-message"><?php echo $_SESSION['reset_error']; unset($_SESSION['reset_error']); ?></div>
-    <?php endif; ?>
+        <div class="auth-body">
+            <?php if (!$isValid): ?>
+                <div class="alert alert-danger">
+                    <i class='bx bx-error-circle me-1'></i>
+                    This password reset link is invalid or has expired. Please request a new recovery link.
+                </div>
+                <div class="text-center mt-3">
+                    <a href="forgot-password.php" class="btn btn-outline-primary btn-sm">Request New Link</a>
+                </div>
+            <?php else: ?>
+                <div class="mb-3 text-center">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2">
+                        Citizen: <strong><?= e($username); ?></strong>
+                    </span>
+                </div>
 
-    <form action="reset-password-handler.php" method="POST" autocomplete="off">
-      <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
+                <form method="POST" action="auth/reset_action.php" autocomplete="off" class="auth-form">
+                    <?= csrf_field(); ?>
+                    <input type="hidden" name="action" value="reset">
+                    <input type="hidden" name="token" value="<?= e($token); ?>">
 
-      <div class="txt_field">
-        <input type="password" name="password" required>
-        <span></span>
-        <label>New Password</label>
-      </div>
+                    <div class="form-group">
+                        <label for="password">New Password</label>
+                        <div class="auth-input-group">
+                            <i class='bx bx-lock-alt input-icon'></i>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Minimum 6 characters" minlength="6" required autofocus>
+                        </div>
+                    </div>
 
-      <div class="txt_field">
-        <input type="password" name="confirm" required>
-        <span></span>
-        <label>Confirm Password</label>
-      </div>
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm New Password</label>
+                        <div class="auth-input-group">
+                            <i class='bx bx-check-shield input-icon'></i>
+                            <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Re-enter new password" minlength="6" required>
+                        </div>
+                    </div>
 
-      <input type="submit" value="Reset Password">
-      
-      <div class="signup_link">
-        <a href="login.php">← Back to Login</a>
-      </div>
-    </form>
-  </div>
-</body>
-</html>
+                    <button type="submit" class="btn btn-auth-submit">
+                        <i class='bx bx-save me-1'></i> Update Password
+                    </button>
+                </form>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

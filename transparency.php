@@ -1,662 +1,305 @@
 <?php
+/**
+ * Cebu City Government Portal - Full Disclosure & Transparency Board
+ */
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+declare(strict_types=1);
 
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/helpers.php';
+require_once __DIR__ . '/includes/db.php';
 
-if (!isset($_SESSION["user"])) {
-    header("Location: login.php");
-    exit();
-}
+$pageTitle = 'Transparency & Governance - Full Disclosure Board';
+$customCss = 'assets/css/transparency.css';
+$customJs = 'assets/js/transparency.js';
+
+// Pre-fetch all download counts from PDF_DOWNLOADS table
+$statsMap = [];
+try {
+    $rows = $pdo->query("SELECT * FROM PDF_DOWNLOADS")->fetchAll();
+    foreach ($rows as $r) {
+        $name = $r['PDF_NAME'] ?? $r['pdf_name'];
+        $statsMap[$name] = [
+            'count' => (int)($r['PDF_DOWNLOAD_COUNT'] ?? $r['pdf_download_count'] ?? 0),
+            'last' => $r['PDF_LAST_DOWNLOADED'] ?? $r['pdf_last_downloaded'] ?? null
+        ];
+    }
+} catch (Throwable $e) {}
+
+$documents = [
+    [
+        'name' => '2024-Q2 FINANCIAL REPORTS.pdf',
+        'title' => '2024 2nd Quarter Audited Financial Statements',
+        'category' => 'financial',
+        'thumb' => 'assets/images/Financial Report 2024 2nd-quarter.jpg',
+        'desc' => 'Quarterly report on city revenue collections, general fund expenditures, and trust fund allocations.'
+    ],
+    [
+        'name' => '2023-2ND QUARTER FINANCIAL REPORTS.pdf',
+        'title' => '2023 2nd Quarter Financial Statements',
+        'category' => 'financial',
+        'thumb' => 'assets/images/Financial Report 2023 2nd-quarter.jpg',
+        'desc' => 'Official statement of receipts and expenditures audited under Commission on Audit (COA) guidelines.'
+    ],
+    [
+        'name' => '2022-4th Quarter Financial Reports.pdf',
+        'title' => '2022 4th Quarter Annual Financial Report',
+        'category' => 'financial',
+        'thumb' => 'assets/images/Financial Report 2022 4th-quarter.jpg',
+        'desc' => 'Year-end consolidated financial report and balance sheet for the City Government of Cebu.'
+    ],
+    [
+        'name' => '2022 – 2nd Quarter Financial Reports.pdf',
+        'title' => '2022 2nd Quarter Financial Report',
+        'category' => 'financial',
+        'thumb' => 'assets/images/Financial Report 2022 2nd-quarter.jpg',
+        'desc' => 'Mid-year financial disclosure detailing barangay project allocations and operational disbursements.'
+    ],
+    [
+        'name' => 'MANPOWER-COMPLEMENT-2024-3RD-QUARTER.pdf',
+        'title' => 'Manpower Complement Report - Q3 2024',
+        'category' => 'manpower',
+        'thumb' => 'assets/images/manpower complement 2024.png',
+        'desc' => 'Plantilla of civil service permanent personnel, casual appointments, and contractual job orders.'
+    ],
+    [
+        'name' => 'MANPOWER-COMPLEMENT-2023-2ND-QUARTER.pdf',
+        'title' => 'Manpower Complement Report - Q2 2023',
+        'category' => 'manpower',
+        'thumb' => 'assets/images/manpower complement 2023.png',
+        'desc' => 'Civil service personnel budget execution and compensation summary for city departments.'
+    ],
+    [
+        'name' => 'MANPOWER COMPLEMENT BUDGET-2023-1ST QUARTER.pdf',
+        'title' => 'Manpower Budget Allocation - Q1 2023',
+        'category' => 'manpower',
+        'thumb' => 'assets/images/manpower complement 2022.png',
+        'desc' => 'Departmental manpower disbursement figures and employee benefits expenditure statement.'
+    ],
+    [
+        'name' => 'MANPOWER-COMPLEMENT-2ND-QUARTER-2022.pdf',
+        'title' => 'Manpower Complement Report - Q2 2022',
+        'category' => 'manpower',
+        'thumb' => 'assets/images/manpower complement 2022 2nd quarter.png',
+        'desc' => 'Historical archive of executive and legislative department staffing complements.'
+    ],
+    [
+        'name' => 'Statement of Indebtedness Payments and Balances (SIPB) – Q3.pdf',
+        'title' => 'Statement of Indebtedness, Payments & Balances (SIPB)',
+        'category' => 'financial',
+        'thumb' => 'assets/images/Statement of Indebtedness Payments and Balances (SIPB) – Q3.png',
+        'desc' => 'Public debt servicing disclosure, municipal loan amortizations, and balance report.'
+    ],
+    [
+        'name' => 'CCMC – Rate of Services.pdf',
+        'title' => 'CCMC Official Schedule of Medical Rates & Services',
+        'category' => 'health',
+        'thumb' => 'assets/images/Ccmc logo.png',
+        'desc' => 'Standardized fee matrix for tertiary hospital inpatient, outpatient, and diagnostic services.'
+    ],
+    [
+        'name' => 'FUN-RIDES-AND-CARNIVAL-VER.4.pdf',
+        'title' => 'Carnival & Amusement Bidding Terms (Ver. 4)',
+        'category' => 'procurement',
+        'thumb' => 'assets/images/Carnival and Circus bidding.png',
+        'desc' => 'Bids and Awards Committee (BAC) terms of reference for seasonal city carnival operations.'
+    ],
+    [
+        'name' => 'PERFORMANCIRCUS-VER.-2.pdf',
+        'title' => 'Performance Circus Public Procurement (Ver. 2)',
+        'category' => 'procurement',
+        'thumb' => 'assets/images/SBB for Carnival and Circus Bidding.png',
+        'desc' => 'Supplemental Bid Bulletin and compliance guidelines for city public entertainment procurement.'
+    ]
+];
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<!-- Hero Section -->
+<section class="transparency-hero">
+    <div class="container text-center">
+        <span class="badge bg-warning text-dark px-3 py-1 fw-bold text-uppercase mb-2">DILG Full Disclosure Policy</span>
+        <h1 class="fw-bold text-white mb-2">Transparency &amp; Good Governance</h1>
+        <p class="text-white-50 mx-auto mb-4" style="max-width: 680px;">
+            In compliance with DILG Memorandum Circulars and Executive Order No. 2 (Freedom of Information), the City Government of Cebu publishes all audited financial records, procurement notices, and manpower complement reports.
+        </p>
 
-<head>
-    <!-- Specify the character encoding for the document -->
-    <meta charset="UTF-8">
-    
-    <!-- Enable responsive design for different screen sizes -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Ensure compatibility with Internet Explorer -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
-    <!-- Define Open Graph title for social media sharing -->
-    <meta property="og:title" content="Cebu City Government Office">
-    
-    <!-- Set the title of the webpage -->
-    <title>Transparency and Governance - Cebu City Government</title>
-    
-    <!-- Add favicon for the website (icon in the browser tab) -->
-    <link rel="icon" type="image/png" href="Images/Cebu City Icon.png" alt="Cebu City Government Favicon Logo">
-    
-    <!-- Import Google Fonts: Poppins in various weights -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Import Boxicons for icons -->
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-    
-    <!-- Import Bootstrap CSS for styling -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" 
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    
-    <!-- Import Bootstrap JS (deferred for non-blocking loading) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" 
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    
-    <!-- Link to the custom stylesheet for additional styles -->
-    <link rel="stylesheet" href="transparency.css">
-</head>
+        <!-- Search input -->
+        <div class="mx-auto" style="max-width: 580px;">
+            <div class="input-group input-group-lg shadow-sm">
+                <span class="input-group-text bg-white border-0"><i class='bx bx-search text-muted'></i></span>
+                <input type="text" id="transparencySearch" class="form-control border-0" placeholder="Search official disclosure documents &amp; reports...">
+            </div>
+        </div>
+    </div>
+</section>
 
-<body>
-    <!-- Home Section -->
-    <div id="Home" id="back-to-top">
-        <div class="container">
-            <!-- Navigation Bar -->
-            <nav>
-                <!-- Logo of Cebu City Government-->
-                <div class="logo-wrapper">
-                    <a href="index.php">
-                        <!-- Cebu City Icon -->
-                        <img src="Images/Cebu City Icon.png" class="logo2 hidden" alt="Cebu City Header Logo">
+<div class="container py-5">
+    <!-- Interactive Budget Allocation Board -->
+    <div class="budget-breakdown-card" id="budget">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+            <div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1">Audited Fiscal Year</span>
+                <h3 class="fw-bold text-dark mt-1 mb-0">Cebu City Annual Budget Distribution</h3>
+                <small class="text-muted">Total Approved General Appropriation: <strong>₱10,800,000,000.00</strong></small>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-primary px-3 py-2 fs-6">COA Compliant</span>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Health & Social Services -->
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold text-dark"><i class='bx bx-plus-medical text-danger me-1'></i> Healthcare &amp; Social Services</span>
+                        <strong class="text-dark">32% &bull; ₱3.45 Billion</strong>
+                    </div>
+                    <div class="progress budget-progress-bar">
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: 32%;" aria-valuenow="32" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small class="text-muted mt-1 d-block">CCMC Hospital Operations, Barangay Health Centers, Senior Citizen Pensions</small>
+                </div>
+            </div>
+
+            <!-- Infrastructure & Flood Control -->
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold text-dark"><i class='bx bx-building text-primary me-1'></i> Infrastructure &amp; Drainage</span>
+                        <strong class="text-dark">28% &bull; ₱3.02 Billion</strong>
+                    </div>
+                    <div class="progress budget-progress-bar">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 28%;" aria-valuenow="28" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small class="text-muted mt-1 d-block">River Dredging, Road Concreting, Flood Interceptors, Bridge Upgrades</small>
+                </div>
+            </div>
+
+            <!-- General Public Administration -->
+            <div class="col-md-4">
+                <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold text-dark"><i class='bx bx-briefcase text-secondary me-1'></i> General Governance</span>
+                        <strong class="text-dark">22% &bull; ₱2.37B</strong>
+                    </div>
+                    <div class="progress budget-progress-bar">
+                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 22%;" aria-valuenow="22" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small class="text-muted mt-1 d-block">City Hall Operations, Digitization, Tax Admin</small>
+                </div>
+            </div>
+
+            <!-- Education & Youth -->
+            <div class="col-md-4">
+                <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold text-dark"><i class='bx bx-book-reader text-warning me-1'></i> Education &amp; Youth</span>
+                        <strong class="text-dark">10% &bull; ₱1.08B</strong>
+                    </div>
+                    <div class="progress budget-progress-bar">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small class="text-muted mt-1 d-block">Scholarships, School Classrooms, Daycare</small>
+                </div>
+            </div>
+
+            <!-- Disaster Preparedness & Environment -->
+            <div class="col-md-4">
+                <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold text-dark"><i class='bx bx-shield-quarter text-success me-1'></i> Disaster &amp; Environment</span>
+                        <strong class="text-dark">8% &bull; ₱864M</strong>
+                    </div>
+                    <div class="progress budget-progress-bar">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 8%;" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small class="text-muted mt-1 d-block">CCDRRMO Emergency Rescue &amp; CCENRO Clean-up</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Buttons Bar -->
+    <div class="d-flex flex-wrap gap-2 justify-content-center mb-4" id="financial">
+        <button class="btn btn-outline-dark btn-sm rounded-pill px-3 active doc-filter-btn" data-category="all">All Documents (<?= count($documents); ?>)</button>
+        <button class="btn btn-outline-dark btn-sm rounded-pill px-3 doc-filter-btn" data-category="financial">Financial Statements</button>
+        <button class="btn btn-outline-dark btn-sm rounded-pill px-3 doc-filter-btn" data-category="manpower">Manpower Complements</button>
+        <button class="btn btn-outline-dark btn-sm rounded-pill px-3 doc-filter-btn" data-category="procurement">Procurement &amp; BAC</button>
+        <button class="btn btn-outline-dark btn-sm rounded-pill px-3 doc-filter-btn" data-category="health">Hospital Rates</button>
+    </div>
+
+    <!-- Document Cards Grid -->
+    <div class="row g-4" id="documentsGrid">
+        <?php foreach ($documents as $doc): 
+            $stat = $statsMap[$doc['name']] ?? ['count' => 0, 'last' => null];
+            $count = $stat['count'];
+            $lastDownloaded = $stat['last'] ? format_ph_time($stat['last']) : 'Never';
+            $pdfPath = 'assets/pdf/' . rawurlencode($doc['name']);
+        ?>
+            <div class="col-lg-4 col-md-6 doc-item-wrapper" data-category="<?= e($doc['category']); ?>">
+                <div class="transparency-doc-card" data-pdf-name="<?= e($doc['name']); ?>">
+                    <div>
+                        <div class="doc-card-thumb">
+                            <img src="<?= e($doc['thumb']); ?>" alt="<?= e($doc['title']); ?>">
+                            <span class="doc-badge-pill"><?= strtoupper(e($doc['category'])); ?></span>
+                        </div>
+                        <div class="doc-body">
+                            <h5 class="doc-title"><?= e($doc['title']); ?></h5>
+                            <p class="text-muted small mb-0"><?= e($doc['desc']); ?></p>
+                        </div>
+                    </div>
+
+                    <div class="doc-footer">
+                        <div class="download-stats-badge">
+                            <div><i class='bx bx-download'></i> Downloads: <strong class="download-count-num"><?= $count; ?></strong></div>
+                            <span class="timestamp">Last: <span class="download-time-val"><?= e($lastDownloaded); ?></span></span>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <!-- Preview in Modal -->
+                            <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                    data-bs-toggle="modal" data-bs-target="#pdfPreviewModal" 
+                                    data-pdf-src="<?= $pdfPath; ?>" 
+                                    data-pdf-name="<?= e($doc['name']); ?>" 
+                                    data-pdf-title="<?= e($doc['title']); ?>" 
+                                    title="Preview Document">
+                                <i class='bx bx-show'></i>
+                            </button>
+                            <!-- Direct Download -->
+                            <a href="<?= $pdfPath; ?>" download="<?= e($doc['name']); ?>" class="btn btn-sm btn-primary btn-trigger-download" title="Download Official PDF">
+                                <i class='bx bx-download'></i> PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<!-- PDF Preview Modal -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-labelledby="pdfModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered pdf-modal-dialog modal-xl">
+        <div class="modal-content civic-modal">
+            <div class="modal-header bg-dark text-white py-3">
+                <div class="d-flex align-items-center gap-2">
+                    <i class='bx bxs-file-pdf fs-4 text-danger'></i>
+                    <h5 class="modal-title fw-bold mb-0 text-white" id="pdfModalTitle">Document Preview</h5>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="#" id="pdfModalDownloadBtn" class="btn btn-sm btn-warning fw-bold" download>
+                        <i class='bx bx-download me-1'></i> Download PDF
                     </a>
-                    <a href="index.php">
-                        <!-- Cebu City Header -->
-                        <img src="Images/Cebu City Header.png" class="logo hidden" alt="Header Logo">
-                    </a>    
-                </div>
-
-                <!-- Hamburger Menu (For Mobile View) -->
-                <div class="hamburger" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-
-                <!-- Navigation Links -->
-                <ul id="nav-links">
-                    <li class="hidden">
-                        <a href="index.php">Home</a>
-                    </li>
-                    <li class="hidden3">
-                        <a href="services.php">Services</a>
-                    </li>
-                    <li class="hidden3">
-                        <a href="transparency.php">Transparency and Governance</a>
-                    </li>
-                    <li class="hidden2">
-                        <a href="events.php">Events and Announcements</a>
-                    </li>
-                    <li class="hidden2">
-                        <a href="logout.php" class="logout-button">Logout</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div> 
-    <!-- Search Bar Section -->
-    <header class="main-header">
-        <div class="overlay">
-            <h1>TRANSPARENCY AND GOVERNANCE</h1>
-            <input type="text" id="searchInput" class="form-control hidden3" placeholder="Search by card title..." />
-        </div>
-    </header>
-        
-
-    <!-- Manpower Complement Section -->
-    <div class="container additional">
-        <h1 class="card-header hidden">Manpower Complements</h1>
-        <div class="row g-4" id="cardContainer"> 
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card hidden">
-                    <img src="Images/manpower complement 2024.png" class="card-img-top" alt="PDF File for Manpower Complement 2024 3rd Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">MANPOWER COMPLEMENT 2024 (3RD QUARTER)</h5>
-                        <p class="card-text">Respectfully transmitting a copy of the 2024, 3rd Quarter Financial Reports for posting as per DILG requirement.</p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal1" data-pdf-src="PDF/MANPOWER-COMPLEMENT-2024-3RD-QUARTER.pdf">
-                                See More
-                            </button>                     
-                        </div>
-                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
             </div>
-
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card hidden">
-                    <img src="Images/manpower complement 2023.png" class="card-img-top" alt="PDF File for Manpower Complement 2023 2nd Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">MANPOWER COMPLEMENT 2023 (2ND QUARTER)</h5>
-                        <p class="card-text">Respectfully transmitting a copy of the 2023, 2nd Quarter Financial Reports for posting as per DILG requirement.</p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal2" data-pdf-src="PDF/MANPOWER-COMPLEMENT-2023-2ND-QUARTER.pdf">
-                                See More
-                            </button>    
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card hidden">
-                    <img src="Images/manpower complement 2022.png" class="card-img-top-2" alt="PDF File for Manpower Complement 2023 1st Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">MANPOWER COMPLEMENT 2023 (1ST QUARTER)</h5>
-                        <p class="card-text">Respectfully transmitting a copy of the 2023, 1st Quarter Financial Reports for posting as per DILG requirement.</p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal3" data-pdf-src="PDF/MANPOWER COMPLEMENT BUDGET-2023-1ST QUARTER.pdf">
-                                See More
-                            </button>    
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card hidden">
-                    <img src="Images/manpower complement 2022 2nd quarter.png" class="card-img-top" alt="PDF File for Manpower Complement 2022 2nd Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">MANPOWER COMPLEMENT 2022 (2ND QUARTER)</h5>
-                        <p class="card-text">Respectfully transmitting a copy of the 2022, 2ND Quarter Financial Reports for posting as per DILG requirement.</p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal4" data-pdf-src="PDF/MANPOWER-COMPLEMENT-2ND-QUARTER-2022.pdf">
-                                See More
-                            </button>    
-                        </div>
-                    </div>
-                </div>
+            <div class="modal-body p-0" style="background: #2b2b2b;">
+                <iframe id="pdfModalIframe" class="pdf-modal-frame" src="about:blank"></iframe>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Financial Reports Section -->
-    <div class="container">
-        <h1 class="card-header hidden2">Financial Reports</h1>
-        <div class="row g-4" id="cardContainer"> 
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card hidden2">
-                    <img src="Images/Financial Report 2024 2nd-quarter.jpg" class="card-img-top" alt="PDF File for Financial Reports 2024 2nd Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">FINANCIAL REPORTS 2024 (2ND QUARTER)</h5>
-                        <p class="card-text">FDP Form No. 9 – Statement of Cash Flows FDP Form No. 12 – Unliquidated Cash Advances FDP Form No. 8 – LDRRM Fund Utilization FDP Form No. 6 – continue reading : 2024 – Q2 FINANCIAL REPORTS</p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal5" data-pdf-src="PDF/2024-Q2 FINANCIAL REPORTS.pdf">
-                                See More
-                            </button>                     
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card modify hidden2">
-                    <img src="Images/Financial Report 2023 2nd-quarter.jpg" class="card-img-top" alt="PDF File for Financial Reports 2023 2nd Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">FINANCIAL REPORTS 2023 (2ND QUARTER)</h5>
-                        <p class="card-text">Attached herein are the 2nd Quarter of 2023 DILG Reports of the Cebu City Government  2Q – CONSOLIDATED QUARTERLY REPORT (TFU) 2Q – LOCAL DRRM FUND continue reading : 2023 – Q2 FINANCIAL REPORTS</p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal6" data-pdf-src="PDF/2023-2ND QUARTER FINANCIAL REPORTS.pdf">
-                                See More
-                            </button>    
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card hidden2">
-                    <img src="Images/Financial Report 2022 4th-quarter.jpg" class="card-img-top" alt="PDF File for Manpower Complement 2022 4th Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">FINANCIAL REPORTS 2022 (4TH QUARTER)</h5>
-                        <p class="card-text">4th Quarter of 2022 DILG Reports of the Cebu City Government 4Q Cash Statement 4Q Unliquidated Cash Advances 4Q LDRRM Fund Utilization continue reading : 2022 – 4th Quarter Financial Reports</p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal7" data-pdf-src="PDF/2022-4th Quarter Financial Reports.pdf">
-                                See More
-                            </button>    
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card hidden2">
-                    <img src="Images/Financial Report 2022 2nd-quarter.jpg" class="card-img-top" alt="PDF File for Manpower Complement 2022 2nd Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">FINANCIAL REPORTS 2022 (2ND QUARTER)</h5>
-                        <p class="card-text">FDP Form 9 – Statement of Cash Flows FDP Form 12 – Unliquidated Cash Advances FDP Form 8 – LDRRM Fund Utilization FDP Form 6 – Trust Fund  continue reading : 2022 – 2nd Quarter Financial Reports </p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal8" data-pdf-src="PDF/2022 – 2nd Quarter Financial Reports.pdf">
-                                See More
-                            </button>   
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Other Reports Section -->
-    <div class="container">
-        <h1 class="card-header hidden">Other Reports</h1>
-        <div class="row g-4" id="cardContainer"> 
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card hidden">
-                    <img src="Images/SBB for Carnival and Circus Bidding.png" class="card-img-top" alt="PDF File for Financial Reports 2024 2nd Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">Structural Budget Balance for Carnival and Circus Bidding 2024</h5>
-                        <p class="card-text">For Fun Rides, For Circus Performance Affidavit of Undertaking - Circus</p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal9" data-pdf-src="PDF/FUN-RIDES-AND-CARNIVAL-VER.4.pdf">
-                                See More
-                            </button>                     
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card hidden">
-                    <img src="Images/Carnival and Circus bidding.png" class="card-img-top" alt="PDF File for Financial Reports 2023 2nd Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">Fun Carnival Activities and Circus bidding 2024</h5>
-                        <p class="card-text">Fun Rides, Circus Extravaganza and Carnival Performance Circus For Cebu City Citizens</p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal10" data-pdf-src="PDF/PERFORMANCIRCUS-VER.-2.pdf">
-                                See More
-                            </button>    
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card hidden">
-                    <img src="Images/Statement of Indebtedness Payments and Balances (SIPB) – Q3.png" class="card-img-top" alt="PDF File for Manpower Complement 2022 4th Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">Statement of Indebtedness Payments and Balances 2024</h5>
-                        <p class="card-text">Summary of outstanding debts, payments made, and remaining balances</p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal11" data-pdf-src="PDF/Statement of Indebtedness Payments and Balances (SIPB) – Q3.pdf">
-                                See More
-                            </button>    
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-3 card-item"> 
-                <div class="card hidden">
-                    <img src="Images/Ccmc logo.png" class="card-img-top" alt="PDF File for Manpower Complement 2022 2nd Quarter">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <h5 class="card-title" style="border-top: 2px solid #000000; padding-top: 10px; text-align: center;">CCMC – Rate of Services</h5>
-                        <p class="card-text">This outlines the fees and charges for various medical and healthcare services provided by the Cebu City Medical Center. </p>
-                        <div class="d-flex justify-content-center mt-auto">
-                            <button type="button" class="btn btn-primary open-pdf-modal" data-bs-toggle="modal" 
-                                data-bs-target="#pdfModal12" data-pdf-src="PDF/CCMC – Rate of Services.pdf">
-                                See More
-                            </button>   
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container"></div>
-        
-    <!-- Footer Section -->
-    <footer class="hidden2">
-        <div class="row">
-            <!-- Column 1: Footer Logo and Description -->
-            <div class="col">
-                <!-- Logo -->
-                <img src="Images/Cebu City Icon.png" class="logo-footer hidden" alt="Footer Cebu City Government Logo">
-                <!-- Description -->
-                <p class="hidden">
-                    Committed to fostering a community of growth and unity, we strive to deliver services with integrity and innovation. 
-                    Together, we build a brighter future for Cebu City.
-                </p>
-            </div>
-
-            <!-- Column 2: Office Information -->
-            <div class="col">
-                <h3 class="hidden3">
-                    Office
-                    <div class="underline"><span></span></div>
-                </h3>
-                <!-- Address -->
-                <p class="hidden3">Dr Jose P. Rizal St., Santo Niño</p>
-                <p class="hidden3">6000, Cebu City, Cebu, Philippines</p>
-                <!-- Email -->
-                <p class="email-id hidden3">
-                    <a href="mailto:cityadmin@cebucity.gov.ph">cityadmin@cebucity.gov.ph</a>
-                </p>
-                <!-- Phone Number -->
-                <h6 class="fw-bold fs-7 hidden3">
-                    <a href="tel:+6324110100">(+632) 411 0100</a>
-                </h6>
-            </div>
-
-            <!-- Column 3: Quick Links -->
-            <div class="col">
-                <h3 class="hidden3">
-                    Links
-                    <div class="underline"><span></span></div>
-                </h3>
-                <!-- Links List -->
-                <ul>
-                    <li class="hidden3"><a href="index.php">Home</a></li>
-                    <li class="hidden3"><a href="about-us.php">About Us</a></li>
-                    <li class="hidden3"><a href="services.php">Services</a></li>
-                    <li class="hidden3"><a href="contact-us.php">Transparency and Governance</a></li>
-                    <li class="hidden3"><a href="transparency.php">Events and Announcements</a></li>
-                    <li class="hidden3"><a href="contact-us.php">Contact Us</a></li>
-                </ul>
-            </div>
-
-            <!-- Column 4: Newsletter update -->
-            <div class="col">
-                <h3 class="hidden2">
-                    Newsletter
-                    <div class="underline"><span></span></div>
-                </h3>
-                <!-- Newsletter Form -->
-                <form class="hidden2">
-                    <!-- Email Input -->
-                    <i class='bx bx-envelope'></i>
-                    <input type="email" class="hidden2" placeholder="Enter your email address" required>
-                    <button type="submit">
-                        <i class='bx bxs-right-arrow-alt'></i>
-                    </button>
-                </form>
-                <!-- Social Media Icons -->
-                <div class="social-icons hidden2">
-                    <i class='bx bxl-gmail'></i>
-                    <i class='bx bxl-facebook'></i>
-                    <i class='bx bxl-instagram-alt'></i>
-                    <i class='bx bxl-twitter'></i>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <!-- Footer Copyright -->
-        <p class="copyright hidden3">© 2024-2025 Cebu City Government. All rights reserved.</p>
-    </footer>
-
-    <!-- PDF Modal 1 -->
-    <div class="modal fade" id="pdfModal1" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/MANPOWER-COMPLEMENT-2024-3RD-QUARTER.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink1" href="PDF/MANPOWER-COMPLEMENT-2024-3RD-QUARTER.pdf" class="btn btn-primary" download data-pdf="MANPOWER-COMPLEMENT-2024-3RD-QUARTER.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- PDF Modal 2 -->
-    <div class="modal fade" id="pdfModal2" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/MANPOWER-COMPLEMENT-2023-2ND-QUARTER.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink2" href="PDF/MANPOWER-COMPLEMENT-2023-2ND-QUARTER.pdf" class="btn btn-primary" download data-pdf="MANPOWER-COMPLEMENT-2023-2ND-QUARTER.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- PDF Modal 3 -->
-    <div class="modal fade" id="pdfModal3" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/MANPOWER COMPLEMENT BUDGET-2023-1ST QUARTER.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink3" href="PDF/MANPOWER COMPLEMENT BUDGET-2023-1ST QUARTER.pdf" class="btn btn-primary" download data-pdf="MANPOWER COMPLEMENT BUDGET-2023-1ST QUARTER.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PDF Modal 4 -->
-    <div class="modal fade" id="pdfModal4" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/MANPOWER-COMPLEMENT-2ND-QUARTER-2022.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink4" href="PDF/MANPOWER-COMPLEMENT-2ND-QUARTER-2022.pdf" class="btn btn-primary" download data-pdf="MANPOWER-COMPLEMENT-2ND-QUARTER-2022.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PDF Modal 5 -->
-    <div class="modal fade" id="pdfModal5" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/2024-Q2 FINANCIAL REPORTS.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink5" href="PDF/2024-Q2 FINANCIAL REPORTS.pdf" class="btn btn-primary" download data-pdf="2024-Q2 FINANCIAL REPORTS.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PDF Modal 6 -->
-    <div class="modal fade" id="pdfModal6" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/2023-2ND QUARTER FINANCIAL REPORTS.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink6" href="PDF/2023-2ND QUARTER FINANCIAL REPORTS.pdf" class="btn btn-primary" download data-pdf="2023-2ND QUARTER FINANCIAL REPORTS.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PDF Modal 7 -->
-    <div class="modal fade" id="pdfModal7" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/2022-4th Quarter Financial Reports.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink7" href="PDF/2022-4th Quarter Financial Reports.pdf" class="btn btn-primary" download data-pdf="2022-4th Quarter Financial Reports.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PDF Modal 8 -->
-    <div class="modal fade" id="pdfModal8" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/2022 – 2nd Quarter Financial Reports.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink8" href="PDF/2022 – 2nd Quarter Financial Reports.pdf" class="btn btn-primary" download data-pdf="2022 – 2nd Quarter Financial Reports.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PDF Modal 9 -->
-    <div class="modal fade" id="pdfModal9" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/FUN-RIDES-AND-CARNIVAL-VER.4.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink9" href="PDF/FUN-RIDES-AND-CARNIVAL-VER.4.pdf" class="btn btn-primary" download data-pdf="FUN-RIDES-AND-CARNIVAL-VER.4.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PDF Modal 10 -->
-    <div class="modal fade" id="pdfModal10" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/PERFORMANCIRCUS-VER.-2.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink10" href="PDF/PERFORMANCIRCUS-VER.-2.pdf" class="btn btn-primary" download data-pdf="PERFORMANCIRCUS-VER.-2.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PDF Modal 11 -->
-    <div class="modal fade" id="pdfModal11" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/Statement of Indebtedness Payments and Balances (SIPB) – Q3.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink11" href="PDF/Statement of Indebtedness Payments and Balances (SIPB) – Q3.pdf" class="btn btn-primary" download data-pdf="Statement of Indebtedness Payments and Balances (SIPB) – Q3.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PDF Modal 12 -->
-    <div class="modal fade" id="pdfModal12" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 85%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center w-100" id="pdfModalLabel">PDF Viewer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- PDF Preview -->
-                    <iframe id="pdfPreview" src="PDF/CCMC – Rate of Services.pdf" width="100%" height="700px" style="border: none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <!-- Download Button -->
-                    <a id="downloadPdfLink12" href="PDF/CCMC – Rate of Services.pdf" class="btn btn-primary" download data-pdf="CCMC – Rate of Services.pdf">Download PDF</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="transparency.js"></script>
-
-    <a id="back-to-top" href="#"><i class='bx bx-arrow-to-top'></i></a>
-
-
-</body>
-
-</html>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

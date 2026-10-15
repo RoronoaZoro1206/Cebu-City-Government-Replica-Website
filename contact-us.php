@@ -1,372 +1,189 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+/**
+ * Cebu City Government Portal - Contact Us & Emergency Hotlines
+ */
 
+declare(strict_types=1);
 
-if (!isset($_SESSION["user"])) {
-    header("Location: login.php");
-    exit();
-}
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/helpers.php';
+require_once __DIR__ . '/includes/db.php';
+
+$pageTitle = 'Contact Us & Emergency Hotlines';
+$customCss = 'assets/css/contact-us.css';
+$customJs = 'assets/js/contact-us.js';
+
+$citizen = current_user();
+
+require_once __DIR__ . '/includes/header.php';
 ?>
-<!DOCTYPE html>
-<html>
-    <head>
-        <!-- Specify the character encoding for the document -->
-        <meta charset="UTF-8">
 
-        <!-- Enable responsive design for different screen sizes -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Hero Header -->
+<section class="contact-hero">
+    <div class="container text-center">
+        <span class="badge bg-danger text-white px-3 py-1 fw-bold text-uppercase mb-2"><i class='bx bx-phone-call'></i> 24/7 Citizen Response</span>
+        <h1 class="fw-bold text-white mb-2">Emergency Hotlines &amp; Citizen Inquiries</h1>
+        <p class="text-white-50 mx-auto" style="max-width: 650px;">
+            Immediate emergency rescue lines, City Hall department directory, and direct public feedback routing to the Mayor’s Citizen Action Center.
+        </p>
+    </div>
+</section>
 
-        <!-- Ensure compatibility with Internet Explorer -->
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<div class="container py-5">
+    <!-- Top Emergency Hotlines Grid -->
+    <div class="hotline-banner-card mb-5" id="hotlines">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <span class="badge bg-danger text-white px-3 py-1 text-uppercase fw-bold">Emergency Dispatch</span>
+                <h3 class="fw-bold text-dark mt-1 mb-0">24/7 Cebu City Emergency Numbers</h3>
+                <small class="text-muted">Dial directly from mobile or landline for immediate medical, fire, or rescue dispatch</small>
+            </div>
+            <div class="text-end d-none d-md-block">
+                <span class="badge bg-dark text-white px-3 py-2 fs-6"><i class='bx bx-radio-circle-marked text-danger'></i> Lines Active</span>
+            </div>
+        </div>
 
-        <!-- Define Open Graph title for social media sharing -->
-        <meta property="og:title" content="Cebu City Government Office">
+        <div class="row g-3">
+            <!-- CCDRRMO -->
+            <div class="col-lg-6">
+                <div class="hotline-big-row">
+                    <div class="hotline-big-icon">
+                        <i class='bx bx-plus-medical'></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-bold text-dark">Disaster Risk Reduction &amp; Rescue (CCDRRMO)</div>
+                        <small class="text-muted d-block">Ambulance, Flood Rescue, Calamity Response</small>
+                        <a href="tel:0322621424" class="hotline-big-phone">(032) 262-1424 / 911</a>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Set the title of the webpage -->
-        <title>Home - Cebu City Government</title>
+            <!-- CCMC -->
+            <div class="col-lg-6">
+                <div class="hotline-big-row">
+                    <div class="hotline-big-icon">
+                        <i class='bx bx-cross'></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-bold text-dark">Cebu City Medical Center (CCMC) Emergency Room</div>
+                        <small class="text-muted d-block">24/7 Tertiary Hospital Triage &amp; Trauma Unit</small>
+                        <a href="tel:0322557141" class="hotline-big-phone">(032) 255-7141</a>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Add favicon for the website (icon in the browser tab) -->
-        <link rel="icon" type="image/png" href="Images/Cebu City Icon.png" alt="Cebu City Government Favicon Logo">
+            <!-- CCTO -->
+            <div class="col-lg-6">
+                <div class="hotline-big-row">
+                    <div class="hotline-big-icon">
+                        <i class='bx bx-car'></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-bold text-dark">Cebu City Transportation Office (CCTO)</div>
+                        <small class="text-muted d-block">Traffic Road Obstruction, Accidents, Towing</small>
+                        <a href="tel:0322539211" class="hotline-big-phone">(032) 253-9211</a>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Import Google Fonts: Poppins in various weights -->
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+            <!-- CCPO -->
+            <div class="col-lg-6">
+                <div class="hotline-big-row">
+                    <div class="hotline-big-icon">
+                        <i class='bx bx-shield'></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-bold text-dark">Cebu City Police Office (CCPO)</div>
+                        <small class="text-muted d-block">Law Enforcement, Tactical Operations Center</small>
+                        <a href="tel:166" class="hotline-big-phone">166 / (032) 254-8635</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <!-- Import Boxicons for icons -->
-        <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <!-- Main Content: City Hall Office Info + Feedback Form -->
+    <div class="row g-4" id="feedback">
+        <!-- Left Column: City Hall Info -->
+        <div class="col-lg-5">
+            <h4 class="fw-bold text-dark mb-3"><i class='bx bx-building text-primary me-2'></i> Cebu City Hall</h4>
+            <div class="info-box-pill">
+                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-map text-primary me-2'></i> Main Address</h6>
+                <p class="text-muted small mb-0">
+                    Cebu City Hall, D. Jakosalem St, Cebu City, 6000 Cebu, Philippines. Located adjacent to the historic Basilica Minore del Santo Niño and Magellan's Cross.
+                </p>
+            </div>
 
-        <!-- Import Bootstrap CSS for styling -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" 
-              integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+            <div class="info-box-pill">
+                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-time text-success me-2'></i> Official Operating Hours</h6>
+                <p class="text-muted small mb-0">
+                    Monday to Friday: <strong>8:00 AM – 5:00 PM (PST)</strong><br>
+                    (No noon break &bull; Continuous public front-line service)
+                </p>
+            </div>
 
-        <!-- Import Bootstrap JS (deferred for non-blocking loading) -->
-        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" 
-                integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+            <div class="info-box-pill">
+                <h6 class="fw-bold text-dark mb-1"><i class='bx bx-envelope text-warning me-2'></i> Electronic Inquiries</h6>
+                <p class="text-muted small mb-0">
+                    General Inquiries: <a href="mailto:info@cebucity.gov.ph" class="text-decoration-none">info@cebucity.gov.ph</a><br>
+                    Mayor’s Action Desk: <a href="mailto:mayorsoffice@cebucity.gov.ph" class="text-decoration-none">mayorsoffice@cebucity.gov.ph</a>
+                </p>
+            </div>
 
-        <link rel="stylesheet" href="contact-us.css">
-    </head>
+            <div class="mt-4">
+                <img src="assets/images/Cebu_City_Hall_Cebu_Philippines.jpg" alt="Cebu City Hall" class="img-fluid rounded-4 shadow-sm">
+            </div>
+        </div>
 
-    <body>
-        <!-- Home Section -->
-        <div id="Home" id="back-to-top">
-            <!-- Navigation Bar -->
-            <nav>
-                <!-- Logo of Cebu City Government-->
-                <div class="logo-wrapper">
-                  <a href="landing_page.html">
-                      <!-- Cebu City Icon -->
-                      <img src="Images/Cebu City Icon.png" class="logo2 hidden" alt="Cebu City Header Logo">
-                  </a>
-                  <a href="landing_page.html">
-                      <!-- Cebu City Header -->
-                      <img src="Images/Cebu City Header.png" class="logo hidden" alt="Header Logo">
-                  </a>    
-              </div>
-
-                <!-- Hamburger Menu (For Mobile View) -->
-                <div class="hamburger" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+        <!-- Right Column: Native Citizen Feedback Form -->
+        <div class="col-lg-7">
+            <div class="feedback-form-card">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="p-2 bg-primary-subtle text-primary rounded-3 fs-3">
+                        <i class='bx bx-message-dots'></i>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-0 text-dark">Citizen Feedback &amp; Inquiries</h4>
+                        <small class="text-muted">Direct submission to the Mayor's Citizen Action Center</small>
+                    </div>
                 </div>
 
-                <!-- Navigation Links -->
-                <ul id="nav-links">
-                    <li class="hidden">
-                        <a href="landing_page.html">Home</a>
-                    </li>
-                    <li class="hidden3">
-                        <a href="services.html">Services</a>
-                    </li>
-                    <li class="hidden3">
-                        <a href="transparency.html">Transparency and Governance</a>
-                    </li>
-                    <li class="hidden2">
-                        <a href="events.html">Events and Announcements</a>
-                    </li>
-                </ul>
-            </nav>
+                <p class="text-muted small mb-4">
+                    Have questions about municipal requirements, service commendations, or reports? Submit your message below. We will review and respond promptly.
+                </p>
 
-            <section class="header hidden">
-                <div class="row py-lg-5">
-                  <div class="col-lg-6 col-md-8 mx-auto">
-                    <h1 class="fw-light"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Contact Us</font></font></h1>
-                    <p class="lead text-body-secondary"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Got questions or feedback? We're here to help! Reach out to us, and we'll get back to you as soon as possible.</font></font></p>
-                  </div>
-                </div>
-            </section>
+                <!-- Feedback Response Alert Box -->
+                <div id="feedbackResponseAlert" style="display: none;"></div>
 
-            <!-- New Contact Us Section -->
-            <div id="Contact-Us">
-                <div class="container">
-                  <div class="row">
-                    <!-- Cebu City Officials Section -->
-                    <div class="col-md-6">
-                      <h2 class="tab-links">Cebu City Officials</h2>
-                      
-                      <div class="contact-card hidden3">
-                        <h3>MAYOR</h3>
-                        <p class="title">ATTY. RAYMOND ALVIN N. GARCIA</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:266-1039">266-1039</a> / <a href="tel:253-2047">253-2047</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>VICE MAYOR</h3>
-                        <p class="title">HON. DONALDO C. HONTIVEROS</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:412-1782">412-1782</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>NORTH DISTRICT COUNCILOR</h3>
-                        <p class="title">HON. ALVIN M. DIZON</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:266-1035">266-1035</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>NORTH DISTRICT COUNCILOR</h3>
-                        <p class="title">HON. JOEL C. GARGANERA</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:254-3521">254-3521</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>SOUTH DISTRICT COUNCILOR</h3>
-                        <p class="title">HON. JAMES ANTHONY V. CUENCO</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:266-1355">266-1355</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>SOUTH DISTRICT COUNCILOR</h3>
-                        <p class="title">HON. DAVID F. TUMULAK</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:266-1032">266-1032</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>ABC PRESIDENT</h3>
-                        <p class="title">HON. FRANKLING O. ONG</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:266-1031">266-1031</a>
-                        </p>
-                      </div>
+                <form id="citizenFeedbackForm">
+                    <div class="mb-3">
+                        <label class="form-label text-dark small fw-bold" for="feedbackName">Citizen Full Name</label>
+                        <input type="text" id="feedbackName" name="name" class="form-control" 
+                               placeholder="e.g. Maria Santos" 
+                               value="<?= e($citizen['user_username'] ?? ''); ?>" required>
                     </div>
-              
-                    <!-- Head of Offices Section -->
-                    <div class="col-md-6">
-                      <h2 class="tab-links">Head of Offices</h2>
-              
-                      <div class="contact-card hidden3">
-                        <h3>CCDRRMO</h3>
-                        <p class="title">RAQUEL ARCE – OIC</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:316-9767">316-9767</a> / <a href="tel:262-142">262-142</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>DEPW</h3>
-                        <p class="title">ENGR. KENNETH CARMELITA M. ENRIQUEZ</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:253-4954">253-4954</a> / <a href="tel:253-4839">253-4839</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>DSWS</h3>
-                        <p class="title">DR. EASTER CONCHA – OIC</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:262-9350">262-9350</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>CITY LEGAL</h3>
-                        <p class="title">ATTY. EUGENE C. ORBITA</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:239-7260">239-7260</a> / <a href="tel:253-2604">253-2604</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>SCHOLARSHIP</h3>
-                        <p class="title">JUDY CONCEPCION Y. NAVARRETTE</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:231-1766">231-1766</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>PROBE</h3>
-                        <p class="title">RAQUEL ARCE</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:328-6890">328-6890</a>
-                        </p>
-                      </div>
-              
-                      <div class="contact-card hidden3">
-                        <h3>COA</h3>
-                        <p class="title">ATTY. ARNEL R. PATATAG</p>
-                        <p>
-                          <i class="icon fa fa-phone"></i>
-                          <a href="tel:238-3624">238-3624</a>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-        </div>             
-        
-        <!--Feedback and Inquiries Section-->
 
-        <section class="feedback-section my-5">
-            <div class="container">
-                <h2 class="tab-links mb-4">Feedback and Inquiries</h2>
-                <form id="feedbackForm" class="row g-3 needs-validation" novalidate>
-                    <div class="col-md-6">
-                        <label for="name" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="name" required>
-                        <div class="invalid-feedback">Please enter your name.</div>
+                    <div class="mb-3">
+                        <label class="form-label text-dark small fw-bold" for="feedbackEmail">Email Address</label>
+                        <input type="email" id="feedbackEmail" name="email" class="form-control" 
+                               placeholder="name@example.com" 
+                               value="<?= e($citizen['user_email'] ?? ''); ?>" required>
+                        <div class="form-text" style="font-size: 0.75rem;">We will send our official reply to this email address.</div>
                     </div>
-                    <div class="col-md-6">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="email" required>
-                        <div class="invalid-feedback">Please enter a valid email address.</div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-dark small fw-bold" for="feedbackMessage">Your Message / Inquiry / Feedback</label>
+                        <textarea id="feedbackMessage" name="message" class="form-control" rows="5" 
+                                  placeholder="Please provide details of your inquiry or feedback..." required></textarea>
                     </div>
-                    <div class="col-12">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" id="message" rows="5" required></textarea>
-                        <div class="invalid-feedback">Please enter your message.</div>
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary px-4">Submit</button>
-                    </div>
-                    <div id="formResponse" class="mt-3"></div>
+
+                    <button type="submit" class="btn btn-gold w-100 py-3 fw-bold shadow-sm">
+                        <i class='bx bx-send me-1'></i> Submit Feedback to Mayor's Desk
+                    </button>
                 </form>
-                <!-- Location and Map Section -->
-                 <div class="location-map mt-5">
-                  <h3 class="location-map-title mb-3">Our Location</h3>
-                  <div class="map-container">
-                    <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d245.35070575443507!2d123.9013902949751!3d10.292870196807542!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a99be3eebe64f3%3A0xcff880392e4b9e1c!2sCebu%20City%20Hall!5e0!3m2!1sen!2sph!4v1744026213656!5m2!1sen!2sph"
-                    width="100%"
-                    height="450"
-                    style="border: 0;"
-                    allowfullscreen=""
-                    loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade">
-                  </iframe>
-                  </div>    
-                 </div>
             </div>
-        </section>
+        </div>
+    </div>
+</div>
 
-        <!-- Footer Section -->
-        <footer class="hidden2">
-            <div class="row">
-                <!-- Column 1: Footer Logo and Description -->
-                <div class="col">
-                    <!-- Logo -->
-                    <img src="Images/Cebu City Icon.png" class="logo-footer hidden" alt="Footer Cebu City Government Logo">
-                    <!-- Description -->
-                    <p class="hidden">
-                        Committed to fostering a community of growth and unity, we strive to deliver services with integrity and innovation. 
-                        Together, we build a brighter future for Cebu City.
-                    </p>
-                </div>
-
-                <!-- Column 2: Office Information -->
-                <div class="col">
-                    <h3 class="hidden3">
-                        Office
-                        <div class="underline"><span></span></div>
-                    </h3>
-                    <!-- Address -->
-                    <p class="hidden3">Dr Jose P. Rizal St., Santo Niño</p>
-                    <p class="hidden3">6000, Cebu City, Cebu, Philippines</p>
-                    <!-- Email -->
-                    <p class="email-id hidden3">cityadmin@cebucity.gov.ph</p>
-                    <!-- Phone Number -->
-                    <h6 class="fw-bold fs-7 hidden3">(+632) 411 0100</h6>
-                </div>
-
-                <!-- Column 3: Quick Links -->
-                <div class="col">
-                    <h3 class="hidden3">
-                        Links
-                        <div class="underline"><span></span></div>
-                    </h3>
-                    <!-- Links List -->
-                    <ul>
-                      <li class="hidden3"><a href="landing_page.html">Home</a></li>
-                      <li class="hidden3"><a href="about-us.html">About Us</a></li>
-                      <li class="hidden3"><a href="services.html">Services</a></li>
-                      <li class="hidden3"><a href="contact-us.html">Transparency and Governance</a></li>
-                      <li class="hidden3"><a href="transparency.html">Events and Announcements</a></li>
-                      <li class="hidden3"><a href="contact-us.html">Contact Us</a></li>
-                  </ul>
-                </div>
-
-                <!-- Column 4: Newsletter update -->
-                <div class="col">
-                    <h3 class="hidden2">
-                        Newsletter
-                        <div class="underline"><span></span></div>
-                    </h3>
-                    <!-- Newsletter Form -->
-                    <form class="hidden2">
-                        <!-- Email Input -->
-                        <i class='bx bx-envelope'></i>
-                        <input type="email" class="hidden2" placeholder="Enter your email address" required>
-                        <button type="submit">
-                            <i class='bx bxs-right-arrow-alt'></i>
-                        </button>
-                    </form>
-                    <!-- Social Media Icons -->
-                    <div class="social-icons hidden2">
-                        <i class='bx bxl-gmail'></i>
-                        <i class='bx bxl-facebook'></i>
-                        <i class='bx bxl-instagram-alt'></i>
-                        <i class='bx bxl-twitter'></i>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <!-- Footer Copyright -->
-            <p class="copyright hidden3">&copy; 2024-2025 Cebu City Government. All rights reserved.</p>
-        </footer>
-
-        <!-- Back-to-Top Button -->
-        <a href="#Home" id="back-to-top">
-            <i class="bx bx-up-arrow-alt"></i>
-        </a>
-
-        <script src="contact-us.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
-                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    </body>
-</html>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

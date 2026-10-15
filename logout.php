@@ -1,12 +1,15 @@
 <?php
+/**
+ * Cebu City Government Portal - Logout Action
+ */
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+declare(strict_types=1);
 
-session_unset();
-session_destroy();
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/helpers.php';
 
-header("Location: login.php");
-die();
-?>
+logout_user();
+
+set_flash('info', 'You have been logged out securely. Daghang salamat!');
+header('Location: index.php');
+exit();

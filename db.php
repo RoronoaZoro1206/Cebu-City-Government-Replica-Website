@@ -1,20 +1,9 @@
 <?php
+/**
+ * Root Database Delegation Proxy
+ * Delegates to includes/db.php for multi-engine support and auto-migrations
+ */
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+declare(strict_types=1);
 
-$host = "localhost";     
-$dbname = "Integrative_Programming"; 
-$dbusername = "postgres"; 
-$dbpassword = "!*Lawrence1206"; 
-
-try {
-    $pdo = new PDO ("pgsql:host=$host;dbname=$dbname", $dbusername, $dbpassword );
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->exec("SET TIME ZONE INTERVAL '+08:00'");
-} catch (PDOException $e) {
-    die("Connection failed with error: ". $e->getMessage());
-}
-
-?>
+require_once __DIR__ . '/includes/db.php';

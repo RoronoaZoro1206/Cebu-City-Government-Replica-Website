@@ -1,366 +1,178 @@
 <?php
+/**
+ * Cebu City Government Portal - Events & Announcements
+ */
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+declare(strict_types=1);
 
-if (!isset($_SESSION["user"])) {
-    header("Location: login.php");
-    exit();
-}
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/helpers.php';
+require_once __DIR__ . '/includes/db.php';
+
+$pageTitle = 'Events & City Announcements';
+$customCss = 'assets/css/events.css';
+$customJs = 'assets/js/events.js';
+
+$citizen = current_user();
+
+$events = [
+    [
+        'id' => 1,
+        'title' => 'Sinulog Festival 2026: Grand Parade & Cultural Festivities',
+        'category' => 'Cultural Heritage',
+        'date' => 'Third Sunday of January 2026',
+        'location' => 'SRP Grandstand & Cebu City Sports Center',
+        'image' => 'assets/images/charter day city hall.jpg',
+        'preview' => 'Pit Senyor! The City Government of Cebu, together with the Sinulog Foundation Inc. (SFI), officially unveils the route and security staging for the world-renowned Sinulog Festival 2026.',
+        'full' => 'Pit Senyor! The City Government of Cebu, together with the Sinulog Foundation Inc. (SFI), officially unveils the route and security staging for the world-renowned Sinulog Festival 2026. Over 3 million pilgrims, devotees, and tourists are expected to witness the Grand Ritual Dance Competition at the South Road Properties (SRP) and the historic street parade passing through Osmeña Boulevard. Comprehensive crowd management, medical stations by CCMC and CCDRRMO, and free public shuttle services will be active 24/7.'
+    ],
+    [
+        'id' => 2,
+        'title' => '89th Cebu City Charter Day Celebration & Citywide Medical Mission',
+        'category' => 'Civic Commemoration',
+        'date' => 'February 24, 2026 &bull; 8:00 AM',
+        'location' => 'Plaza Sugbo & Cebu City Hall Grounds',
+        'image' => 'assets/images/cebala.jpg',
+        'preview' => 'Commemorating the Commonwealth Act signed by Don Vicente Rama establishing Cebu as a chartered city on February 24, 1937 with free public medical and dental services.',
+        'full' => 'Commemorating the Commonwealth Act signed by Don Vicente Rama establishing Cebu as a chartered city on February 24, 1937 with free public medical and dental services. City Hall offices will join the civic parade and testimonial dinner honoring outstanding institutions and individuals. Free eye checks, dental extractions, and pediatric medicines will be distributed by CCMC and the City Health Department throughout the day.'
+    ],
+    [
+        'id' => 3,
+        'title' => '₱45.7M Infrastructure Package for Flood Interceptors & Drainage',
+        'category' => 'Public Works',
+        'date' => 'March 2026 Advisory',
+        'location' => 'Bulacao, Lahug, and Tejero River Basins',
+        'image' => 'assets/images/Cebu City acts on them with P45.7M projects.png',
+        'preview' => 'The Department of Engineering and Public Works (DEPW) launches major civil works to widen drainage outlets and dredge low-lying flood channels.',
+        'full' => 'The Department of Engineering and Public Works (DEPW) launches major civil works to widen drainage outlets and dredge low-lying flood channels. This comprehensive package includes desilting Lahug River, upgrading box culverts along Colon and Sanciangko streets, and installing smart water level monitoring sensors connected to the CCDRRMO Command Center.'
+    ],
+    [
+        'id' => 4,
+        'title' => 'City Hall Activates Cashless Payment Kiosks for Tax & Permits',
+        'category' => 'E-Governance',
+        'date' => 'Active Now',
+        'location' => 'Legislative Building & Online Portal',
+        'image' => 'assets/images/Cashless payment at City Hall soon.png',
+        'preview' => 'Sugboanons can now pay real property taxes, business license renewals, and traffic violation citations digitally via GCash, Maya, and online bank transfer.',
+        'full' => 'Sugboanons can now pay real property taxes, business license renewals, and traffic violation citations digitally via GCash, Maya, and online bank transfer. In line with the Anti-Red Tape Authority (ARTA) Ease of Doing Business mandates, self-service automated kiosks are deployed at the City Hall lobby to reduce queuing time to under 5 minutes.'
+    ],
+    [
+        'id' => 5,
+        'title' => 'Dry Season Water Relief Measures for Upland Farming Communities',
+        'category' => 'Disaster Preparedness',
+        'date' => 'Ongoing Operation',
+        'location' => 'Transcentral Highway & Mountain Barangays',
+        'image' => 'assets/images/City Hall starts implementing contingencies for dry season.png',
+        'preview' => 'CCDRRMO deploys 10,000-liter water tankers and distributes durable high-density polyethylene (HDPE) water containers to agricultural households.',
+        'full' => 'CCDRRMO deploys 10,000-liter water tankers and distributes durable high-density polyethylene (HDPE) water containers to agricultural households. The City Agriculture Department has allocated drought-resistant crop seeds and biological irrigation equipment to safeguard vegetable producers in Sirao, Busay, Malubog, and Adlaon.'
+    ]
+];
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <!-- Specify the character encoding for the document -->
-    <meta charset="UTF-8">
+<!-- Hero Header -->
+<section class="events-hero">
+    <div class="container text-center">
+        <span class="badge bg-warning text-dark px-3 py-1 fw-bold text-uppercase mb-2">Public Information Office</span>
+        <h1 class="fw-bold text-white mb-2">City Events &amp; Official Announcements</h1>
+        <p class="text-white-50 mx-auto" style="max-width: 650px;">
+            Stay informed on city government programs, civic holidays, public advisories, and participate in open citizen discussions.
+        </p>
+    </div>
+</section>
 
-    <!-- Enable responsive design for different screen sizes -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<div class="container py-5" id="announcements">
+    <div class="row g-4">
+        <!-- Left: Events Feed -->
+        <div class="col-lg-7">
+            <h3 class="fw-bold text-dark mb-4"><i class='bx bx-news text-primary me-2'></i> Latest City Advisories</h3>
 
-    <!-- Ensure compatibility with Internet Explorer -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-    <!-- Define Open Graph title for social media sharing -->
-    <meta property="og:title" content="Cebu City Government Office">
-
-    <!-- Set the title of the webpage -->
-    <title>Home - Cebu City Government</title>
-
-    <!-- Add favicon for the website (icon in the browser tab) -->
-    <link rel="icon" type="image/png" href="Images/Cebu City Icon.png" alt="Cebu City Government Favicon Logo">
-
-    <!-- Import Google Fonts: Poppins in various weights -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- Import Boxicons for icons -->
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-
-    <!-- Import Bootstrap CSS for styling -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-
-    <!-- Import Bootstrap JS (deferred for non-blocking loading) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="events.css">
-</head>
-<body>
-    <div id="Home">
-        <!-- Header -->
-        <section class="header hidden">
-            <div class="row py-lg-5">
-                <div class="col-lg-6 col-md-8 mx-auto">
-                    <h1 class="fw-light"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Events and Announcements</font></font></h1>
-                    <p class="lead text-body-secondary"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Stay updated with the latest events and announcements from the Cebu City Government. From community programs to important advisories, this section keeps you informed and engaged. Don't miss out on what's happening in our city</font></font></p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Navigation Bar -->
-        <nav>
-            <!-- Logo of Cebu City Government -->
-            <div class="logo-wrapper">
-                <a href="index.php">
-                    <!-- Cebu City Icon -->
-                    <img src="Images/Cebu City Icon.png" class="logo2 hidden" alt="Cebu City Header Logo">
-                </a>
-                <a href="index.php">
-                    <!-- Cebu City Header -->
-                    <img src="Images/Cebu City Header.png" class="logo hidden" alt="Header Logo">
-                </a>    
-            </div>
-
-            <!-- Hamburger Menu (For Mobile View) -->
-            <div class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-
-            <!-- Navigation Links -->
-            <ul id="nav-links">
-                <li class="hidden">
-                    <a href="index.php">Home</a>
-                </li>
-                <li class="hidden3">
-                    <a href="services.php">Services</a>
-                </li>
-                <li class="hidden3">
-                    <a href="transparency.php">Transparency and Governance</a>
-                </li>
-                <li class="hidden2">
-                    <a href="events.php">Events and Announcements</a>
-                </li>
-                <li class="hidden2">
-                    <a href="logout.php" class="logout-button">Logout</a>
-                </li>
-            </ul>
-        </nav>
-
-        <!--Cards-->
-        <div class="album py-5 bg-body-tertiary">
-            <div class="container">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                    
-                    <!-- Card 1 -->
-                    <div class="col-md-4 hidden3">
-                        <div class="card shadow-sm">
-                            <img src="Images/bg.jpg" class="card-img-top" alt="Thumbnail" width="100%" height="200px">
-                                <title>Placeholder</title>
-                                <rect width="100%" height="100%" fill="#55595c"></rect>
-                            </img>
-                            <div class="card-body">
-                                <h1 class="h4">Sinulog Festival</h1>
-                                <h2 class="h5">Event</h2>
-                                <p class="card-text" data-full-text="Experience the vibrant energy of Sinulog Festival 2025 in Cebu! Witness colorful parades, captivating performances, and religious devotion, all celebrating the rich cultural heritage of the region. This festival promises an unforgettable blend of tradition, music, and unity!" data-preview-text="Join the celebration of Sinulog Festival 2025 with parades, performances, and cultural festivities that showcase Cebu's heritage.">
-                                    Join the celebration of Sinulog Festival 2025 with parades, performances, and cultural festivities that showcase Cebu's heritage.
-                                </p>
-                                
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary read-more-btn">Read More</button>
-                                    <!-- Comment Button -->
-                                    <button type="button" class="btn btn-sm btn-outline-secondary comment-btn" data-bs-toggle="modal" data-bs-target="#commentModal" data-event-id="1">
-                                        <i class='bx bx-comment'></i> Comment
-                                    </button>
-                                </div>
-                            </div>
+            <?php foreach ($events as $ev): ?>
+                <div class="event-card">
+                    <img src="<?= e($ev['image']); ?>" alt="<?= e($ev['title']); ?>" class="event-card-img">
+                    <div class="event-card-body">
+                        <div class="event-meta-strip">
+                            <span class="event-badge-category"><?= e($ev['category']); ?></span>
+                            <span><i class='bx bx-calendar text-muted me-1'></i> <?= e($ev['date']); ?></span>
+                            <span><i class='bx bx-map-pin text-muted me-1'></i> <?= e($ev['location']); ?></span>
                         </div>
-                    </div>
-
-                    <!-- Card 2 -->
-                    <div class="col-md-4 hidden3">
-                        <div class="card shadow-sm">
-                            <img src="Images/c2.jpeg" class="card-img-top" alt="Thumbnail" width="100%" height="200px">
-                                <title>Placeholder</title>
-                                <rect width="100%" height="100%" fill="#55595c"></rect>
-                            </img>
-                            <div class="card-body">
-                                <h1 class="h4">Cebu Tango Festival</h1>
-                                <h2 class="h5">Event</h2>
-                                <p class="card-text" data-full-text="Experience the passion and elegance of tango at the 3rd Cebu Tango Festival Don Quijote Cup 2025. Join dancers and enthusiasts from around the world for workshops and competitions. The event will be held at the Waterfront Hotel and Casino from February 14 to 16, 2025." data-preview-text="Join the Cebu Tango Festival 2025 for workshops, performances, and competitions at the Waterfront Hotel and Casino from February 14 to 16!">
-                                    Join the Cebu Tango Festival 2025 for workshops and competitions at the Waterfront Hotel and Casino from February 14 to 16!
-                                </p>
-                                
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary read-more-btn">Read More</button>
-                                    <!-- Comment Button -->
-                                    <button type="button" class="btn btn-sm btn-outline-secondary comment-btn" data-bs-toggle="modal" data-bs-target="#commentModal" data-event-id="2">
-                                        <i class='bx bx-comment'></i> Comment
-                                    </button>
-                                </div>
-                            </div>
+                        <h4 class="event-title"><?= e($ev['title']); ?></h4>
+                        
+                        <div class="event-text event-preview-text">
+                            <?= e($ev['preview']); ?>
                         </div>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="col-md-4 hidden3">
-                        <div class="card shadow-sm">
-                            <img src="Images/c3.jpeg" class="card-img-top" alt="Thumbnail" width="100%" height="200px">
-                                <title>Placeholder</title>
-                                <rect width="100%" height="100%" fill="#55595c"></rect>
-                            </img>
-                            <div class="card-body">
-                                <h1 class="h4">PREX National Convention</h1>
-                                <h2 class="h5">Event</h2>
-                                <p class="card-text" data-full-text="Engage in insightful discussions and networking opportunities at the 16th PREX National Convention. This event brings together professionals and experts to share knowledge and experiences. It will take place at the IEC Convention Center Cebu City from February 21 to 23, 2025." data-preview-text="Don't miss the 16th PREX National Convention at the IEC Convention Center Cebu City from February 21 to 23, 2025, with networking opportunities!">
-                                    Don't miss the 16th PREX National Convention at the IEC Convention Center Cebu City from February 21 to 23, 2025, with networking opportunities!
-                                </p>
-                                
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary read-more-btn">Read More</button>
-                                    <!-- Comment Button -->
-                                    <button type="button" class="btn btn-sm btn-outline-secondary comment-btn" data-bs-toggle="modal" data-bs-target="#commentModal" data-event-id="3">
-                                        <i class='bx bx-comment'></i> Comment
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="event-text event-full-text" style="display: none;">
+                            <?= e($ev['full']); ?>
                         </div>
-                    </div>
 
-                    <!-- Card 4 -->
-                    <div class="col-md-4 hidden3">
-                        <div class="card shadow-sm">
-                            <img src="Images/c5.jpg" class="card-img-top" alt="Thumbnail" width="100%" height="200px">
-                                <title>Placeholder</title>
-                                <rect width="100%" height="100%" fill="#55595c"></rect>
-                            </img>
-                            <div class="card-body">
-                                <h1 class="h4">Cebu's Annual Arts and Crafts</h1>
-                                <h2 class="h5">Announcement</h2>
-                                <p class="card-text" data-full-text="Don't miss Cebu's Annual Arts and Crafts Exhibit, showcasing local talent and craftsmanship! From February 10 to 14, experience handmade goods, stunning artwork, and more at the Cebu City Sports Complex. Perfect for art lovers and collectors!" data-preview-text="Explore local talent at Cebu's Annual Arts and Crafts Exhibit, February 10-14 at the Cebu City Sports Complex!">
-                                    Explore local talent at Cebu's Annual Arts and Crafts Exhibit, February 10-14 at the Cebu City Sports Complex!
-                                </p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary read-more-btn">Read More</button>
-                                    <!-- Comment Button -->
-                                    <button type="button" class="btn btn-sm btn-outline-secondary comment-btn" data-bs-toggle="modal" data-bs-target="#commentModal" data-event-id="4">
-                                        <i class='bx bx-comment'></i> Comment
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                            <button type="button" class="btn btn-sm btn-link text-primary text-decoration-none p-0 fw-semibold btn-read-more-toggle">
+                                Read More <i class='bx bx-chevron-down'></i>
+                            </button>
 
-                    <!-- Card 5 -->
-                    <div class="col-md-4 hidden3">
-                        <div class="card shadow-sm">
-                            <img src="Images/c6.jpeg" class="card-img-top" alt="Thumbnail" width="100%" height="200px">
-                                <title>Placeholder</title>
-                                <rect width="100%" height="100%" fill="#55595c"></rect>
-                            </img>
-                            <div class="card-body">
-                                <h1 class="h4">Cebu Food Festival</h1>
-                                <h2 class="h5">Announcement</h2>
-                                <p class="card-text" data-full-text="Savor the flavors of Cebu at the Cebu Food Festival 2025! From February 12 to 15, enjoy a variety of local and international dishes at the SM Seaside City Cebu. Don't miss this celebration of food, culture, and community!" data-preview-text="Join the Cebu Food Festival 2025 from February 12 to 15 at SM Seaside City Cebu and enjoy a wide range of delicious food!">
-                                    Join the Cebu Food Festival 2025 from February 12 to 15 at SM Seaside City Cebu and enjoy a wide range of delicious food!
-                                </p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary read-more-btn">Read More</button>
-                                    <!-- Comment Button -->
-                                    <button type="button" class="btn btn-sm btn-outline-secondary comment-btn" data-bs-toggle="modal" data-bs-target="#commentModal" data-event-id="5">
-                                        <i class='bx bx-comment'></i> Comment
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 6 -->
-                    <div class="col-md-4 hidden3">
-                        <div class="card shadow-sm">
-                            <img src="Images/c7.jpg" class="card-img-top" alt="Thumbnail" width="100%" height="200px">
-                                <title>Placeholder</title>
-                                <rect width="100%" height="100%" fill="#55595c"></rect>
-                            </img>
-                            <div class="card-body">
-                                <h1 class="h4">Cebu Beach and Music</h1>
-                                <h2 class="h5">Announcement</h2>
-                                <p class="card-text" data-full-text="Get ready for the Cebu Beach and Music Fest 2025! From February 25 to 28, enjoy an exciting mix of live music, beach activities, and vibrant parties at Mactan Beach. It's the ultimate beach party experience!" data-preview-text="Join the Cebu Beach and Music Fest 2025 from February 25 to 28 at Mactan Beach for live music, beach activities, and more!">
-                                    Join the Cebu Beach and Music Fest 2025 from February 25 to 28 at Mactan Beach for live music, beach activities, and more!
-                                </p>
-                                
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary read-more-btn">Read More</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary comment-btn" data-bs-toggle="modal" data-bs-target="#commentModal" data-event-id="6">
-                                        <i class='bx bx-comment'></i> Comment
-                                    </button>
-                                </div>
-                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 btn-open-discussion" 
+                                    data-event-id="<?= $ev['id']; ?>" 
+                                    data-event-title="<?= e($ev['title']); ?>">
+                                <i class='bx bx-chat me-1'></i> Citizen Discussion
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
+            <?php endforeach; ?>
         </div>
-        
-        <!-- Comment Modal -->
-        <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Comments</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Comment list will load here -->
-                        <div id="commentList"></div>
 
-                        <!-- Comment Form -->
-                        <form id="commentForm">
-                            <input type="hidden" name="event_id" id="event_id">
-                            <input type="hidden" name="parent_id" id="parent_id" value="">
-                            <div class="mb-2">
-                                <input type="text" class="form-control" name="username" placeholder="Your name" required>
-                            </div>
-                            <div class="mb-2">
-                                <textarea class="form-control" name="comment" id="comment" placeholder="Write a comment..." required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Post Comment</button>
-                        </form>
-                    </div>
+        <!-- Right: Threaded Comments & Citizen Discussion -->
+        <div class="col-lg-5" id="citizenDiscussionSection">
+            <div class="comments-container-box sticky-top" style="top: 90px;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class='bx bx-conversation text-primary me-2'></i> Citizen Forum
+                    </h5>
+                    <span class="badge bg-light text-dark border">Public Forum</span>
                 </div>
+
+                <div class="alert alert-light border small text-muted mb-3 py-2">
+                    Discussing: <strong class="text-dark" id="discussionEventTitle">Sinulog Festival 2026: Grand Parade &amp; Cultural Festivities</strong>
+                </div>
+
+                <!-- Live Threaded Comments List -->
+                <div id="commentList" class="mb-4" style="max-height: 480px; overflow-y: auto; padding-right: 6px;">
+                    <!-- Injected dynamically via api/load_comments.php -->
+                </div>
+
+                <!-- Replying indicator -->
+                <div id="replyingToNotice" class="alert alert-warning py-1 px-3 small mb-2 d-flex justify-content-between align-items-center" style="display: none;">
+                    <span>Replying to <strong id="replyUsernameText">User</strong></span>
+                    <button type="button" class="btn-close btn-sm p-0" id="btnCancelReply" aria-label="Cancel reply"></button>
+                </div>
+
+                <!-- Submit Comment Form -->
+                <form id="commentForm" class="comment-input-card">
+                    <input type="hidden" name="event_id" id="event_id" value="1">
+                    <input type="hidden" name="parent_id" id="parent_id" value="">
+
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold text-dark mb-1">Your Name</label>
+                        <input type="text" name="username" id="username" class="form-control form-control-sm" 
+                               placeholder="e.g. Maria Santos" 
+                               value="<?= e($citizen['user_username'] ?? ''); ?>" 
+                               <?= $citizen ? 'readonly' : ''; ?> required>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold text-dark mb-1">Citizen Comment / Inquiries</label>
+                        <textarea name="comment" id="comment" class="form-control form-control-sm" rows="3" placeholder="Share your constructive thoughts on this announcement..." maxlength="1000" required></textarea>
+                        <div class="form-text text-end" style="font-size: 0.7rem;">Max 1,000 characters &bull; Moderated forum</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gold btn-sm w-100 fw-bold">
+                        <i class='bx bx-send me-1'></i> Post Comment
+                    </button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Footer Section -->
-    <footer class="hidden2">
-        <div class="row">
-            <!-- Column 1: Footer Logo and Description -->
-            <div class="col">
-                <img src="Images/Cebu City Icon.png" class="logo-footer hidden" alt="Footer Cebu City Government Logo">
-                <p class="hidden">Committed to fostering a community of growth and unity, we strive to deliver services with integrity and innovation. Together, we build a brighter future for Cebu City.</p>
-            </div>
-
-            <!-- Column 2: Office Information -->
-            <div class="col">
-                <h3 class="hidden3">
-                    Office
-                    <div class="underline"><span></span></div>
-                </h3>
-                <!-- Address -->
-                <p class="hidden3">Dr Jose P. Rizal St., Santo Niño</p>
-                <p class="hidden3">6000, Cebu City, Cebu, Philippines</p>
-                <!-- Email -->
-                <p class="email-id hidden3">
-                    <a href="mailto:cityadmin@cebucity.gov.ph">cityadmin@cebucity.gov.ph</a>
-                </p>
-                <!-- Phone Number -->
-                <h6 class="fw-bold fs-7 hidden3">
-                    <a href="tel:+6324110100">(+632) 411 0100</a>
-                </h6>
-            </div>
-
-            <!-- Column 3: Quick Links -->
-            <div class="col">
-                <h3 class="hidden3">
-                    Links
-                    <div class="underline"><span></span></div>
-                </h3>
-                <ul>
-                    <li class="hidden3"><a href="index.php">Home</a></li>
-                    <li class="hidden3"><a href="about-us.php">About Us</a></li>
-                    <li class="hidden3"><a href="services.php">Services</a></li>
-                    <li class="hidden3"><a href="contact-us.php">Transparency and Governance</a></li>
-                    <li class="hidden3"><a href="transparency.php">Events and Announcements</a></li>
-                    <li class="hidden3"><a href="contact-us.php">Contact Us</a></li>
-                </ul>
-            </div>
-
-            <!-- Column 4: Newsletter Update -->
-            <div class="col">
-                <h3 class="hidden2">
-                    Newsletter
-                    <div class="underline"><span></span></div>
-                </h3>
-                <form class="hidden2">
-                    <i class='bx bx-envelope'></i>
-                    <input type="email" class="hidden2" placeholder="Enter your email address" required>
-                    <button type="submit">
-                        <i class='bx bxs-right-arrow-alt'></i>
-                    </button>
-                </form>
-                <div class="social-icons hidden2">
-                    <i class='bx bxl-gmail'></i>
-                    <i class='bx bxl-facebook'></i>
-                    <i class='bx bxl-instagram-alt'></i>
-                    <i class='bx bxl-twitter'></i>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <p class="copyright hidden3">&copy; 2024-2025 Cebu City Government. All rights reserved.</p>
-    </footer>
-
-    <!-- Back-to-Top Button -->
-    <a href="#Home" id="back-to-top">
-        <i class="bx bx-up-arrow-alt"></i>
-    </a>
-
-    <script src="events.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

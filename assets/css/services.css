@@ -1,0 +1,98 @@
+/**
+ * Cebu City Government Portal - Services Page Custom Styles
+ */
+
+.services-hero-header {
+    background: linear-gradient(135deg, #0B2545 0%, #00509D 100%);
+    color: #FFFFFF;
+    padding: 60px 0;
+    border-bottom: 3px solid #FDB813;
+}
+
+.services-filter-nav .nav-pills .nav-link {
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 10px 18px;
+    border-radius: 30px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    transition: all 0.2s ease;
+}
+
+.services-filter-nav .nav-pills .nav-link:hover {
+    border-color: #00509D;
+    color: #00509D;
+}
+
+.services-filter-nav .nav-pills .nav-link.active {
+    background: #0B2545;
+    color: #FDB813;
+    border-color: #0B2545;
+    box-shadow: 0 4px 10px rgba(11, 37, 69, 0.2);
+}
+
+.department-banner-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.department-header {
+    background: #F8FAFC;
+    padding: 20px 24px;
+    border-bottom: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.department-logo {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #FFFFFF;
+    padding: 4px;
+    border: 1px solid #CBD5E1;
+}
+
+.department-body {
+    padding: 24px;
+}
+
+.service-subcard {
+    background: #F8FAFC;
+    border-radius: 12px;
+    padding: 18px 20px;
+    border: 1px solid #E2E8F0;
+    height: 100%;
+    transition: all 0.2s ease;
+}
+
+.service-subcard:hover {
+    background: #FFFFFF;
+    border-color: #00509D;
+    box-shadow: 0 4px 12px rgba(0, 80, 157, 0.08);
+}
+
+.appointment-booking-box {
+    background: linear-gradient(135deg, #0B2545 0%, #134074 100%);
+    color: #FFFFFF;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(11, 37, 69, 0.2);
+    border: 2px solid #FDB813;
+}
+
+.appointment-booking-box .form-control,
+.appointment-booking-box .form-select {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.95);
+    font-size: 0.95rem;
+}

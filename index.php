@@ -1,426 +1,330 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+/**
+ * Cebu City Government Portal - Civic Homepage
+ * Serbisyong Tinud-anay, Katungod sa Katawhan
+ */
 
+declare(strict_types=1);
 
-if (!isset($_SESSION["user"])) {
-    header("Location: login.php");
-    exit();
-}
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/helpers.php';
+require_once __DIR__ . '/includes/db.php';
+
+$pageTitle = 'Home - Official Portal';
+$customCss = 'assets/css/index.css';
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<!-- Live Civic Advisory Ticker -->
+<div class="civic-ticker-bar">
+    <div class="container d-flex align-items-center gap-3">
+        <span class="ticker-label"><i class='bx bxs-megaphone'></i> ADVISORY</span>
+        <div class="flex-grow-1 text-truncate">
+            <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
+                📢 Cebu City Government launches unified digital citizen appointments. &bull; 
+                💧 CCDRRMO implements dry season contingency water container distribution in upland barangays. &bull; 
+                💳 Cashless payment kiosks now operational at Cebu City Hall legislative lobby. &bull; 
+                🚑 CCMC 24/7 Outpatient &amp; Emergency Department open to all residents.
+            </marquee>
+        </div>
+    </div>
+</div>
 
-<head>
-    <!-- Specify the character encoding for the document -->
-    <meta charset="UTF-8">
-    
-    <!-- Enable responsive design for different screen sizes -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Ensure compatibility with Internet Explorer -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
-    <!-- Define Open Graph title for social media sharing -->
-    <meta property="og:title" content="Cebu City Government Office">
-    
-    <!-- Set the title of the webpage -->
-    <title>Home - Cebu City Government</title>
-    
-    <!-- Add favicon for the website (icon in the browser tab) -->
-    <link rel="icon" type="image/png" href="Images/Cebu City Icon.png" alt="Cebu City Government Favicon Logo">
-    
-    <!-- Import Google Fonts: Poppins in various weights -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Import Boxicons for icons -->
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-    
-    <!-- Import Bootstrap CSS for styling -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" 
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    
-    <!-- Import Bootstrap JS (deferred for non-blocking loading) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" 
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    
-    <!-- Link to the custom stylesheet for additional styles -->
-    <link rel="stylesheet" href="index.css">
-</head>
+<!-- Hero Banner Section -->
+<section class="civic-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="hero-badge-pill">
+                    <i class='bx bxs-badge-check'></i> Queen City of the South &bull; Founded 1565
+                </div>
+                <h1 class="hero-title">
+                    Serbisyong Tinud-anay, <br>
+                    <span class="text-gold">Katungod sa Katawhan.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Welcome to the official digital portal of the City Government of Cebu. Transact with city departments, view full transparency audits, schedule appointments, and access vital citizen services online.
+                </p>
+                <div class="hero-cta-group">
+                    <a href="services.php" class="btn btn-gold btn-lg px-4 shadow">
+                        <i class='bx bx-grid-alt me-1'></i> Browse City Services
+                    </a>
+                    <a href="services.php#appointment" class="btn btn-outline-portal btn-lg px-4">
+                        <i class='bx bx-calendar-check me-1'></i> Book Appointment
+                    </a>
+                    <a href="transparency.php" class="btn btn-outline-light btn-lg px-3">
+                        <i class='bx bx-file me-1'></i> Full Disclosure Board
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 d-none d-lg-block text-center">
+                <img src="assets/images/header logo mayor and vice mayor.png" alt="Cebu City Leadership Emblem" class="img-fluid" style="max-height: 280px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));">
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- Citizen Quick E-Services Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="text-gold fw-bold text-uppercase small letter-spacing-1">City Hall at Your Fingertips</span>
+            <h2 class="fw-bold mt-1 text-dark">Most Requested Citizen Services</h2>
+            <p class="text-muted mx-auto" style="max-width: 620px;">
+                Direct access to Cebu City government departments, permits, clearances, and emergency welfare assistance.
+            </p>
+        </div>
 
-<body>
-    <!-- Home Section -->
-    <div id="Home" id="back-to-top">
+        <div class="row g-4">
+            <!-- Service 1: Business Permits -->
+            <div class="col-lg-4 col-md-6">
+                <a href="services.php#bplo" class="civic-service-card">
+                    <div>
+                        <div class="service-icon-box service-icon-blue">
+                            <i class='bx bx-briefcase-alt-2'></i>
+                        </div>
+                        <h4 class="service-card-title">Business Permits (BPLO)</h4>
+                        <p class="service-card-desc">
+                            Apply for new business registrations, annual renewals, and gross sales assessments with the Business Permit and Licensing Office.
+                        </p>
+                    </div>
+                    <div class="service-card-link">
+                        Access BPLO Services <i class='bx bx-right-arrow-alt'></i>
+                    </div>
+                </a>
+            </div>
 
-        <!-- Header Section -->
-        <div class="header">
-            <div class="container">
+            <!-- Service 2: Real Property Tax -->
+            <div class="col-lg-4 col-md-6">
+                <a href="services.php#rpt" class="civic-service-card">
+                    <div>
+                        <div class="service-icon-box service-icon-gold">
+                            <i class='bx bx-home-alt'></i>
+                        </div>
+                        <h4 class="service-card-title">Real Property Tax (Assessor)</h4>
+                        <p class="service-card-desc">
+                            Inquire about real property tax declarations, tax clearances, and payment schedules under the City Assessor &amp; City Treasurer.
+                        </p>
+                    </div>
+                    <div class="service-card-link">
+                        Calculate Property Tax <i class='bx bx-right-arrow-alt'></i>
+                    </div>
+                </a>
+            </div>
 
-                <!-- Navigation Bar -->
-                <nav>
-                    <!-- Logo of Cebu City Government-->
-                    <div class="logo-wrapper">
-                        <a href="index.php">
-                            <!-- Cebu City Icon -->
-                            <img src="Images/Cebu City Icon.png" class="logo2 hidden" alt="Cebu City Header Logo">
+            <!-- Service 3: CCMC Hospital & Health -->
+            <div class="col-lg-4 col-md-6">
+                <a href="services.php#ccmc" class="civic-service-card">
+                    <div>
+                        <div class="service-icon-box service-icon-green">
+                            <i class='bx bx-plus-medical'></i>
+                        </div>
+                        <h4 class="service-card-title">Cebu City Medical Center</h4>
+                        <p class="service-card-desc">
+                            24/7 emergency care, outpatient consultations, diagnostic laboratory schedules, and healthcare subsidy programs for residents.
+                        </p>
+                    </div>
+                    <div class="service-card-link">
+                        View Hospital Services <i class='bx bx-right-arrow-alt'></i>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Service 4: Social Assistance -->
+            <div class="col-lg-4 col-md-6">
+                <a href="services.php#dsws" class="civic-service-card">
+                    <div>
+                        <div class="service-icon-box service-icon-purple">
+                            <i class='bx bx-user-check'></i>
+                        </div>
+                        <h4 class="service-card-title">Social Welfare &amp; Aid (DSWS)</h4>
+                        <p class="service-card-desc">
+                            Senior citizen financial assistance, solo parent benefits, medical burial aid, and emergency crisis intervention programs.
+                        </p>
+                    </div>
+                    <div class="service-card-link">
+                        Check DSWS Programs <i class='bx bx-right-arrow-alt'></i>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Service 5: Traffic & Transportation -->
+            <div class="col-lg-4 col-md-6">
+                <a href="services.php#ccto" class="civic-service-card">
+                    <div>
+                        <div class="service-icon-box service-icon-red">
+                            <i class='bx bx-car'></i>
+                        </div>
+                        <h4 class="service-card-title">Traffic &amp; Impounding (CCTO)</h4>
+                        <p class="service-card-desc">
+                            Pay traffic violation citations, process impounded vehicle releases, request traffic management, and view road rerouting advisories.
+                        </p>
+                    </div>
+                    <div class="service-card-link">
+                        CCTO Traffic Office <i class='bx bx-right-arrow-alt'></i>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Service 6: Engineering & Public Works -->
+            <div class="col-lg-4 col-md-6">
+                <a href="services.php#depw" class="civic-service-card">
+                    <div>
+                        <div class="service-icon-box service-icon-teal">
+                            <i class='bx bx-hard-hat'></i>
+                        </div>
+                        <h4 class="service-card-title">Engineering &amp; Works (DEPW)</h4>
+                        <p class="service-card-desc">
+                            Building permits, drainage unclogging requests, street lighting maintenance, and infrastructure development projects.
+                        </p>
+                    </div>
+                    <div class="service-card-link">
+                        Request Public Works <i class='bx bx-right-arrow-alt'></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="services.php" class="btn btn-outline-primary px-4 py-2 fw-semibold rounded-pill">
+                View Complete Directory of 24+ City Services &rarr;
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Mayor's Desk & Leadership Spotlight -->
+<section class="py-5 bg-white border-top border-bottom">
+    <div class="container">
+        <div class="mayors-corner-card">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-5">
+                    <div class="official-portrait-frame">
+                        <img src="assets/images/mayor.png" alt="Mayor of Cebu City" class="img-fluid">
+                        <div class="official-title-tag">
+                            <h4 class="fw-bold mb-0 text-white">Office of the City Mayor</h4>
+                            <small class="text-gold">City Government of Cebu &bull; Executive Branch</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7 p-4 p-md-5">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 mb-3">
+                        <i class='bx bx-crown'></i> Executive Message
+                    </span>
+                    <h2 class="fw-bold text-dark mb-3">“Padayon sa Kalambuan sa Sugbo”</h2>
+                    <p class="text-muted">
+                        The City Government of Cebu remains steadfast in its mandate to deliver prompt, honest, and compassionate public service. We are accelerating the digitalization of City Hall transactions, ensuring that every Sugboanon can access government permits, social subsidies, and healthcare without bureaucratic delay.
+                    </p>
+                    <p class="text-muted">
+                        Through total fiscal transparency and responsible stewardship of public funds, we ensure that every peso is accounted for and directly benefits our 80 barangays.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a href="about-us.php" class="btn btn-primary fw-semibold px-4">
+                            <i class='bx bx-user me-1'></i> Meet the City Council &amp; Officials
                         </a>
-                        <a href="index.php">
-                            <!-- Cebu City Header -->
-                            <img src="Images/Cebu City Header.png" class="logo hidden" alt="Header Logo">
-                        </a>    
+                        <a href="transparency.php" class="btn btn-outline-secondary fw-semibold px-4">
+                            <i class='bx bx-check-shield me-1'></i> City Transparency Board
+                        </a>
                     </div>
-
-                    <!-- Hamburger Menu (For Mobile View) -->
-                    <div class="hamburger" id="hamburger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-
-                    <!-- Navigation Links -->
-                    <ul id="nav-links">
-                        <li class="hidden">
-                            <a href="index.php">Home</a>
-                        </li>
-                        <li class="hidden3">
-                            <a href="services.php">Services</a>
-                        </li>
-                        <li class="hidden3">
-                            <a href="transparency.php">Transparency and Governance</a>
-                        </li>
-                        <li class="hidden2">
-                            <a href="events.php">Events and Announcements</a>
-                        </li>
-                        <li class="hidden2">
-                            <a href="logout.php" class="logout-button">Logout</a>
-                        </li>
-                    </ul>
-                </nav>
-
-                <!-- Video Background -->
-                <div class="video-background">
-                    <video autoplay loop muted>
-                        <source src="Videos/landing page video.mp4" type="video/mp4">
-                    </video>
-                </div>
-
-                <!-- Header Text Section -->
-                <div class="header-text">
-                    <h2 class="hidden">Queen City of the South</h2>
-                    <h1 class="hidden2">Official Cebu City Government Website</h1>
-
-                    <!-- Buttons -->
-                    <div class="btn-box hidden">
-                        <a href="about-us.php">About Us</a>
-                        <a href="contact-us.php">Contact Us</a>
-                    </div>
-                </div>
-
-                <!-- Social Media Icons and Links -->
-                <div class="home-icons hidden2">
-                    <a href="mailto:cityadmin@cebucity.gov.ph" target="_blank">
-                        <img src="Images/Gmail.png" alt="Gmail Address">
-                    </a>
-                    <a href="https://www.facebook.com/cebucity.info" target="_blank">
-                        <img src="Images/Facebook.png" alt="Facebook Address">
-                    </a>
-                    <a href="https://www.instagram.com/cebucitygovernment/" target="_blank">
-                        <img src="Images/Instagram.png" alt="Instagram Address">
-                    </a>
-                    <a href="https://x.com/infocebucity?lang=en" target="_blank">
-                        <img src="Images/Twitter.png" alt="Twitter Address">
-                    </a>
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- Carousel Section -->
-    <div class="container" id="carousel-section">
-        <!-- Title Section for the Carousel -->
-        <div class="carousel-title hidden2">
-            <h2>Cebu City News and Announcements</h2>
-        </div>
-    
-        <!-- Bootstrap Carousel Component -->
-        <div id="cebu-city-gov-carousel" class="carousel" data-bs-ride="carousel">
-        <div id="carousel-numeric-indicators" class="carousel-numeric-indicators"></div>
-
-            <!-- Carousel Items -->
-            <div class="carousel-inner hidden">
-                <!-- First Carousel Item -->
-                <div class="carousel-item active c-item">
-                    <img src="Images/Ched Tdp scholarship by Edu Rama from cebu city government.png" class="d-block w-100 c-img" alt="Scholarship from Ched Tdp by Edu Rama">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Scholarship from CHED-TDP <br> by Edu Rama</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://www.facebook.com/EduardoRamaJr/posts/pfbid02rKNFGGcZJkpaUzvQbNQ9M4ndzkKHH8JNFE9tQAMovx18nhWKdchW23UdvQ5BZ3oBl?rdid=HoWlXFzzl76fJZGO" target="_blank">Read More</a>
-                    </div>
+<!-- Civic Impact Statistics -->
+<section class="py-5">
+    <div class="container">
+        <div class="stats-strip">
+            <div class="row g-4">
+                <div class="col-md-3 col-6 stat-item">
+                    <div class="stat-number">₱10.8B</div>
+                    <div class="stat-label">Annual City Budget</div>
                 </div>
-    
-                <!-- Second Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/flood victims rescue.png" class="d-block w-100 c-img" alt="Cebu City DRRM remove illegal structures by the Kinalumsan River">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Cebu city DRRM removes flood-causing structures</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://climatetracker.asia/philippines-flooding-cebu-city-rushes-to-implement-years-old-recommendations/" target="_blank">Read More</a>
-                    </div>
+                <div class="col-md-3 col-6 stat-item">
+                    <div class="stat-number">80</div>
+                    <div class="stat-label">Barangays Served</div>
                 </div>
-    
-                <!-- Third Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/More barangays get cash aid from City Government.png" class="d-block w-100 c-img" alt="Cash assistance to Barangays of Cebu City">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Cash assistance to <br> barangays of Cebu City</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://cebucity.news/2022/12/30/more-barangays-get-cash-aid-from-city-government/" target="_blank">Read More</a>
-                    </div>
+                <div class="col-md-3 col-6 stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Full Disclosure Compliant</div>
                 </div>
-    
-                <!-- Fourth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/senior citizens cash aid.png" class="d-block w-100 c-img" alt="Senior Citizens cash aid">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Cebu city senior citizens cash aid</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://cebudailynews.inquirer.net/590826/cebu-city-eligible-senior-citizens-to-get-cash-aid-on-sept-7" target="_blank">Read More</a>
-                    </div>
+                <div class="col-md-3 col-6 stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Emergency Readiness</div>
                 </div>
-    
-                <!-- Fifth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/Solo parents cash aid.png" class="d-block w-100 c-img" alt=">Cebu city solo parents cash aid">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Cebu city solo parents cash aid</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://cebucity.news/2022/12/14/council-to-city-implement-cash-aid-for-solo-parents/7" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Sixth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/Malaysia helps cebu city government.jpeg" class="d-block w-100 c-img" alt="Malaysia to help Cebu City government in its infrastructure projects">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Malaysia to help Cebu City government in its infrastructure projects</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://cebudailynews.inquirer.net/623651/malaysia-to-help-cebu-city-government-in-its-infrastructure-projects" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Seventh Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/charter day city hall.jpg" class="d-block w-100 c-img" alt="P35k charter day gift for City Hall workers: Bonus awaits Comelec nod">
-                    <div class="carousel-caption d-md-block">
-                        <h5>P35k charter day gift for City Hall workers: Bonus awaits Comelec nod</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://www.philstar.com/the-freeman/cebu-news/2025/04/08/2434401/p35k-charter-day-gift-city-hall-workers-bonus-awaits-comelec-nod" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Eight Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/Cashless payment at City Hall soon.png" class="d-block w-100 c-img" alt="Cashless payment at City Hall soon">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Cashless payment at City Hall soon</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://www.philstar.com/the-freeman/cebu-news/2025/04/08/2434383/cashless-payment-city-hall-soon" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Ninth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/Comelec bars Serge Osmeña.png" class="d-block w-100 c-img" alt="From seeking public office: Comelec bars Serge Osmeña">
-                    <div class="carousel-caption d-md-block">
-                        <h5>From seeking public office: Comelec bars Serge Osmeña</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://www.philstar.com/the-freeman/cebu-news/2025/04/06/2433945/seeking-public-office-comelec-bars-serge-osmea" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Tenth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/Fire hits Inayawan anew, 200 homeless.png" class="d-block w-100 c-img" alt="Fire hits Inayawan anew, 200 homeless">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Fire hits Inayawan anew, 200 homeless</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://www.philstar.com/the-freeman/cebu-news/2025/04/06/2433939/fire-hits-inayawan-anew-200-homeless" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Eleventh Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/Residents with water problems to get containers.png" class="d-block w-100 c-img" alt="Residents with water problems to get containers">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Residents with water problems to get containers</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://www.philstar.com/the-freeman/cebu-news/2025/04/08/2434377/residents-water-problems-get-containers" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Twelfth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/Pia slams PhilHealth 18 percent hospital coverage.png" class="d-block w-100 c-img" alt="Pia slams PhilHealth 18 percent hospital coverage">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Pia slams PhilHealth 18 percent hospital coverage</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://www.philstar.com/the-freeman/cebu-news/2025/04/06/2433936/pia-slams-philhealth-18-percent-hospital-coverage" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Thirteenth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/‘Nobody is above the law’.png" class="d-block w-100 c-img" alt=">Mayor Garcia on police misconduct: 'Nobody is above the law'">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Mayor Garcia on police misconduct: 'Nobody is above the law'</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://cebudailynews.inquirer.net/631718/mayor-garcia-on-police-misconduct-nobody-is-above-the-law" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Fourteenth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/City Hall starts implementing contingencies for dry season.png" class="d-block w-100 c-img" alt="City Hall starts implementing contingencies for dry season">
-                    <div class="carousel-caption d-md-block">
-                        <h5>City Hall starts implementing contingencies for dry season</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://www.philstar.com/the-freeman/cebu-news/2025/04/09/2434656/city-hall-starts-implementing-contingencies-dry-season" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Fifteenth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/The Monday when Cebu City Hall had 'two mayors.'.png" class="d-block w-100 c-img" alt="Top of the Week: The Monday when Cebu City Hall had 'two mayors.'">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Top of the Week: The Monday when Cebu City Hall had 'two mayors.'</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://www.sunstar.com.ph/cebu/top-of-the-week-the-monday-when-cebu-city-hall-had-two-mayors" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Sixteenth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/Cebu City acts on them with P45.7M projects.png" class="d-block w-100 c-img" alt="Landslide woes in Sirao: Cebu City acts on them with P45.7M projects">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Landslide woes in Sirao: Cebu City acts on them with P45.7M projects</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://cebudailynews.inquirer.net/628504/landslide-woes-in-sirao-cebu-city-acts-on-them-with-p45-7m-projects" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Seventeenth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/Release of 'aid to the barangays' starts on Monday .png" class="d-block w-100 c-img" alt="Release of ‘aid to the barangays’ starts on Monday – Raymond">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Release of ‘aid to the barangays’ starts on Monday – Raymond</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://cebudailynews.inquirer.net/628043/release-of-aid-to-the-barangays-starts-on-monday-raymond" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Eighteenth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/City Hall drops case as Rama returns van.png" class="d-block w-100 c-img" alt="Rama carnapping: City Hall drops case as Rama returns van">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Rama carnapping: City Hall drops case as Rama returns van</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://cebudailynews.inquirer.net/626069/rama-carnapping-city-hall-drops-case-as-rama-returns-van" target="_blank">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Nineteenth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/Archival New Mayor.png" class="d-block w-100 c-img" alt="Rama carnapping: City Hall drops case as Rama returns van">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Archival, Osmeña win mayor and vice mayor positions in Cebu City</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://www.gmanetwork.com/news/topstories/regions/945978/archival-osme-a-win-mayor-and-vice-mayor-positions-in-cebu-city/story/" target="_blank">Read More</a>
-                    </div>
-                </div>
-                
-                <!-- Twentieth Carousel Item -->
-                <div class="carousel-item c-item">
-                    <img src="Images/BOPK-2025.png" class="d-block w-100 c-img" alt="Rama carnapping: City Hall drops case as Rama returns van">
-                    <div class="carousel-caption d-md-block">
-                        <h5>Election 2025: BOPK dominates Cebu City polls</h5>
-                        <a class="btn btn-primary px-4 py-2 fs-5 mt-2 mb-2" href="https://cebudailynews.inquirer.net/637520/election-2025-bopk-dominates-cebu-city-polls" target="_blank">Read More</a>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
-    
-    <!-- Footer Section -->
-    <footer class="hidden2">
-        <div class="row">
-            <!-- Column 1: Footer Logo and Description -->
-            <div class="col">
-                <!-- Logo -->
-                <img src="Images/Cebu City Icon.png" class="logo-footer hidden" alt="Footer Cebu City Government Logo">
-                <!-- Description -->
-                <p class="hidden">
-                    Committed to fostering a community of growth and unity, we strive to deliver services with integrity and innovation. 
-                    Together, we build a brighter future for Cebu City.
-                </p>
+</section>
+
+<!-- Latest City Announcements & News -->
+<section class="py-5 bg-white border-top">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <span class="text-gold fw-bold text-uppercase small">News &amp; Updates</span>
+                <h2 class="fw-bold text-dark mb-0">Official City Announcements</h2>
+            </div>
+            <a href="events.php" class="text-primary fw-bold text-decoration-none">
+                View All Announcements &rarr;
+            </a>
+        </div>
+
+        <div class="row g-4">
+            <!-- News Item 1 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="civic-news-card">
+                    <img src="assets/images/Cebu City acts on them with P45.7M projects.png" alt="Cebu City P45.7M projects" class="news-thumb">
+                    <div class="news-body">
+                        <span class="news-tag">Infrastructure</span>
+                        <h4 class="news-title">City Hall Approves ₱45.7M Projects for Drainage and Road Upgrades</h4>
+                        <p class="news-summary">
+                            Targeted infrastructure programs commence across low-lying barangays to improve stormwater management and mitigate flood risks ahead of the rainy season.
+                        </p>
+                        <a href="events.php#announcements" class="fw-semibold text-primary text-decoration-none">
+                            Read Full Details &amp; Citizen Comments &rarr;
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <!-- Column 2: Office Information -->
-            <div class="col">
-                <h3 class="hidden3">
-                    Office
-                    <div class="underline"><span></span></div>
-                </h3>
-                <!-- Address -->
-                <p class="hidden3">Dr Jose P. Rizal St., Santo Niño</p>
-                <p class="hidden3">6000, Cebu City, Cebu, Philippines</p>
-                <!-- Email -->
-                <p class="email-id hidden3">
-                    <a href="mailto:cityadmin@cebucity.gov.ph">cityadmin@cebucity.gov.ph</a>
-                </p>
-                <!-- Phone Number -->
-                <h6 class="fw-bold fs-7 hidden3">
-                    <a href="tel:+6324110100">(+632) 411 0100</a>
-                </h6>
+            <!-- News Item 2 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="civic-news-card">
+                    <img src="assets/images/Cashless payment at City Hall soon.png" alt="Cashless Payment at City Hall" class="news-thumb">
+                    <div class="news-body">
+                        <span class="news-tag">Digital Governance</span>
+                        <h4 class="news-title">City Hall Integrates Cashless Payment Kiosks for Tax &amp; Permits</h4>
+                        <p class="news-summary">
+                            Sugboanons can now pay real property taxes, business renewals, and traffic citations via GCash, Maya, and online debit/credit portals for faster clearing.
+                        </p>
+                        <a href="events.php#announcements" class="fw-semibold text-primary text-decoration-none">
+                            Read Full Details &amp; Citizen Comments &rarr;
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <!-- Column 3: Quick Links -->
-            <div class="col">
-                <h3 class="hidden3">
-                    Links
-                    <div class="underline"><span></span></div>
-                </h3>
-                <!-- Links List -->
-                <ul>
-                    <li class="hidden3"><a href="index.php">Home</a></li>
-                    <li class="hidden3"><a href="about-us.php">About Us</a></li>
-                    <li class="hidden3"><a href="services.php">Services</a></li>
-                    <li class="hidden3"><a href="contact-us.php">Transparency and Governance</a></li>
-                    <li class="hidden3"><a href="transparency.php">Events and Announcements</a></li>
-                    <li class="hidden3"><a href="contact-us.php">Contact Us</a></li>
-                </ul>
-            </div>
-
-            <!-- Column 4: Newsletter update -->
-            <div class="col">
-                <h3 class="hidden2">
-                    Newsletter
-                    <div class="underline"><span></span></div>
-                </h3>
-                <!-- Newsletter Form -->
-                <form class="hidden2">
-                    <!-- Email Input -->
-                    <i class='bx bx-envelope'></i>
-                    <input type="email" class="hidden2" placeholder="Enter your email address" required>
-                    <button type="submit">
-                        <i class='bx bxs-right-arrow-alt'></i>
-                    </button>
-                </form>
-                <!-- Social Media Icons -->
-                <div class="social-icons hidden2">
-                    <i class='bx bxl-gmail'></i>
-                    <i class='bx bxl-facebook'></i>
-                    <i class='bx bxl-instagram-alt'></i>
-                    <i class='bx bxl-twitter'></i>
+            <!-- News Item 3 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="civic-news-card">
+                    <img src="assets/images/City Hall starts implementing contingencies for dry season.png" alt="Dry season contingencies" class="news-thumb">
+                    <div class="news-body">
+                        <span class="news-tag">Public Advisory</span>
+                        <h4 class="news-title">Contingency Measures Implemented for Upland Barangay Water Supply</h4>
+                        <p class="news-summary">
+                            CCDRRMO and the City Agriculture Department deploy mobile water tankers and storage tanks to assist farming communities in the mountain districts.
+                        </p>
+                        <a href="events.php#announcements" class="fw-semibold text-primary text-decoration-none">
+                            Read Full Details &amp; Citizen Comments &rarr;
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-        <hr>
-        <!-- Footer Copyright -->
-        <p class="copyright hidden3">© 2024-2025 Cebu City Government. All rights reserved.</p>
-    </footer>
-    
-    <!-- Link to the javascript for additional functionality -->
-    <script src="index.js"></script>
+    </div>
+</section>
 
-    <!-- Back to top icon-->
-    <a id="back-to-top" href="#"><i class='bx bx-arrow-to-top'></i></a>
-
-</body>
-
-</html>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

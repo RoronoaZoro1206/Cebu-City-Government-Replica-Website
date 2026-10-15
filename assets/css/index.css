@@ -1,0 +1,279 @@
+/**
+ * Cebu City Government Portal - Homepage Custom Styling
+ */
+
+/* Hero Banner */
+.civic-hero {
+    position: relative;
+    background: linear-gradient(135deg, rgba(7, 23, 44, 0.92) 0%, rgba(19, 64, 116, 0.85) 100%), 
+                url('../images/Cebu_City_Hall_Cebu_Philippines.jpg') center/cover no-repeat;
+    color: #FFFFFF;
+    padding: 90px 0 100px;
+    overflow: hidden;
+}
+
+.hero-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(253, 184, 19, 0.15);
+    border: 1px solid var(--civic-gold);
+    color: var(--civic-gold);
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.hero-title {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: #FFFFFF;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #E2E8F0;
+    max-width: 650px;
+    margin-bottom: 30px;
+    font-weight: 400;
+}
+
+.hero-cta-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Civic Live Ticker */
+.civic-ticker-bar {
+    background: #07172C;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #E2E8F0;
+    padding: 10px 0;
+    font-size: 0.875rem;
+}
+
+.ticker-label {
+    background: var(--civic-red);
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Quick Services Grid */
+.civic-service-card {
+    background: #FFFFFF;
+    border-radius: 14px;
+    border: 1px solid #E2E8F0;
+    padding: 24px 20px;
+    height: 100%;
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+}
+
+.civic-service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px rgba(11, 37, 69, 0.12);
+    border-color: #00509D;
+}
+
+.service-icon-box {
+    width: 54px;
+    height: 54px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    transition: transform 0.2s ease;
+}
+
+.civic-service-card:hover .service-icon-box {
+    transform: scale(1.1);
+}
+
+.service-icon-blue { background: #E0F2FE; color: #0284C7; }
+.service-icon-gold { background: #FEF3C7; color: #D97706; }
+.service-icon-green { background: #D1FAE5; color: #059669; }
+.service-icon-red { background: #FEE2E2; color: #DC2626; }
+.service-icon-purple { background: #EDE9FE; color: #7C3AED; }
+.service-icon-teal { background: #CCFBF1; color: #0D9488; }
+
+.service-card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 8px;
+}
+
+.service-card-desc {
+    font-size: 0.875rem;
+    color: #64748B;
+    line-height: 1.5;
+    margin-bottom: 14px;
+}
+
+.service-card-link {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #00509D;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Mayor's Desk Section */
+.mayors-corner-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.official-portrait-frame {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    min-height: 380px;
+    background: #0B2545;
+}
+
+.official-portrait-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.official-title-tag {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(7, 23, 44, 0.95) 0%, transparent 100%);
+    color: #FFFFFF;
+    padding: 30px 20px 15px;
+}
+
+/* Stat Counters Strip */
+.stats-strip {
+    background: linear-gradient(135deg, #0B2545 0%, #134074 100%);
+    color: #FFFFFF;
+    border-radius: 16px;
+    padding: 40px 20px;
+    box-shadow: 0 10px 25px rgba(11, 37, 69, 0.15);
+}
+
+.stat-item {
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.stat-item:last-child {
+    border-right: none;
+}
+
+.stat-number {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #FDB813;
+    line-height: 1;
+    margin-bottom: 8px;
+    font-family: var(--font-heading);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #E2E8F0;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* News Cards */
+.civic-news-card {
+    background: #FFFFFF;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    overflow: hidden;
+    height: 100%;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.civic-news-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.news-thumb {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.news-body {
+    padding: 20px;
+}
+
+.news-tag {
+    font-size: 0.725rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #00509D;
+    background: #E0F2FE;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.news-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0F172A;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.news-summary {
+    font-size: 0.85rem;
+    color: #64748B;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    .stat-item {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+    .stat-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+}
