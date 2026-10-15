@@ -10,6 +10,7 @@ require_once __DIR__ . '/includes/helpers.php';
 require_once __DIR__ . '/includes/db.php';
 
 $pageTitle = 'Contact Us & Emergency Hotlines';
+$includeLeaflet = true;
 $customCss = 'assets/css/contact-us.css';
 $customJs = 'assets/js/contact-us.js';
 
@@ -101,6 +102,57 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         </div>
     </div>
+
+    <!-- Leaflet.js Interactive City Government Map Section -->
+    <section class="interactive-map-section mb-5" id="map-section">
+        <div class="map-card-wrapper">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-3">
+                <div>
+                    <span class="badge bg-primary text-white px-3 py-1 text-uppercase fw-bold"><i class='bx bx-map-pin me-1'></i> Civic Geography &amp; Facility Locator</span>
+                    <h3 class="fw-bold text-dark mt-2 mb-0">Interactive Cebu City Government Map</h3>
+                    <small class="text-muted">Powered by Leaflet.js &bull; Pinning Cebu City Hall, public hospitals, disaster response centers, and traffic commands</small>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnResetMapView" title="Reset Map View">
+                        <i class='bx bx-reset me-1'></i> Center City Hall
+                    </button>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=10.2934,123.9019" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
+                        <i class='bx bx-navigation me-1'></i> Open GPS Directions
+                    </a>
+                </div>
+            </div>
+
+            <!-- Facility Category Filter Buttons -->
+            <div class="d-flex flex-wrap gap-2 mb-3" id="mapFilterButtons">
+                <button type="button" class="map-filter-btn active" data-filter="all">
+                    <i class='bx bx-grid-alt me-1'></i> All Facilities (6)
+                </button>
+                <button type="button" class="map-filter-btn" data-filter="admin">
+                    <i class='bx bx-building me-1'></i> City Hall &amp; Administration
+                </button>
+                <button type="button" class="map-filter-btn" data-filter="emergency">
+                    <i class='bx bx-plus-medical me-1'></i> Emergency &amp; Healthcare
+                </button>
+                <button type="button" class="map-filter-btn" data-filter="traffic">
+                    <i class='bx bx-car me-1'></i> Traffic &amp; Police Command
+                </button>
+            </div>
+
+            <!-- Leaflet Map Container -->
+            <div class="map-container-relative position-relative">
+                <div id="cebuCityMap" style="height: 460px; width: 100%; border-radius: 14px; z-index: 1;"></div>
+                <div class="map-info-badge d-none d-md-flex align-items-center gap-2">
+                    <i class='bx bx-info-circle text-primary'></i>
+                    <span>Click any pin or directory card to view office details &amp; driving routes</span>
+                </div>
+            </div>
+
+            <!-- Facility Directory Cards Carousel/Grid -->
+            <div class="row g-3 mt-3" id="facilityCardsGrid">
+                <!-- Dynamically rendered or pre-rendered facility cards will be populated here -->
+            </div>
+        </div>
+    </section>
 
     <!-- Main Content: City Hall Office Info + Feedback Form -->
     <div class="row g-4" id="feedback">

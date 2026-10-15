@@ -75,3 +75,167 @@
     padding: 18px;
     margin-bottom: 16px;
 }
+
+/* Leaflet Map & Civic Facility Locator Styles */
+.map-card-wrapper {
+    background: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    padding: 28px;
+    box-shadow: 0 4px 20px rgba(11, 37, 69, 0.06);
+}
+
+.map-filter-btn {
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    color: #334155;
+    padding: 7px 16px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.map-filter-btn:hover {
+    background: #E2E8F0;
+    color: #0F172A;
+    border-color: #94A3B8;
+}
+
+.map-filter-btn.active {
+    background: #0B2545;
+    color: #FFFFFF;
+    border-color: #0B2545;
+    box-shadow: 0 2px 8px rgba(11, 37, 69, 0.25);
+}
+
+.map-info-badge {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(8px);
+    border: 1px solid #E2E8F0;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.785rem;
+    font-weight: 600;
+    color: #1E293B;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+}
+
+/* Custom Leaflet Pin Markers */
+.leaflet-civic-pin {
+    width: 36px;
+    height: 36px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    border: 2px solid #FFFFFF;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.leaflet-civic-pin i {
+    transform: rotate(45deg);
+    font-size: 1.15rem;
+    color: #FFFFFF;
+}
+
+.leaflet-civic-pin.pin-admin {
+    background: linear-gradient(135deg, #0B2545, #134074);
+    border-color: #FDB813;
+}
+
+.leaflet-civic-pin.pin-emergency {
+    background: linear-gradient(135deg, #D90429, #EF233C);
+}
+
+.leaflet-civic-pin.pin-traffic {
+    background: linear-gradient(135deg, #00509D, #002966);
+}
+
+.leaflet-civic-pin:hover,
+.leaflet-civic-pin.active-pin {
+    transform: rotate(-45deg) scale(1.2);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+    z-index: 1000 !important;
+}
+
+/* Leaflet Popup Styling */
+.leaflet-popup-content-wrapper {
+    border-radius: 14px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    box-shadow: 0 12px 30px rgba(11, 37, 69, 0.25) !important;
+    border: 1px solid #E2E8F0 !important;
+}
+
+.leaflet-popup-content {
+    margin: 0 !important;
+    line-height: 1.5 !important;
+}
+
+.leaflet-popup-tip {
+    background: #FFFFFF !important;
+}
+
+.civic-popup-header {
+    background: #0B2545;
+    color: #FFFFFF;
+    padding: 12px 16px;
+    border-bottom: 2px solid #FDB813;
+}
+
+.civic-popup-body {
+    padding: 14px 16px;
+    background: #FFFFFF;
+    font-size: 0.825rem;
+    color: #334155;
+}
+
+/* Facility Directory Cards */
+.facility-locator-card {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 16px;
+    height: 100%;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.facility-locator-card:hover {
+    background: #FFFFFF;
+    border-color: #00509D;
+    box-shadow: 0 6px 18px rgba(11, 37, 69, 0.1);
+    transform: translateY(-3px);
+}
+
+.facility-locator-card.card-active {
+    background: #FFFFFF;
+    border-color: #FDB813;
+    border-width: 2px;
+    box-shadow: 0 6px 20px rgba(253, 184, 19, 0.2);
+}
+
+.facility-icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}

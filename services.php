@@ -33,15 +33,19 @@ require_once __DIR__ . '/includes/header.php';
                 <span class="input-group-text bg-white border-0"><i class='bx bx-search text-muted'></i></span>
                 <input type="text" id="serviceFilterSearch" class="form-control border-0" placeholder="Filter services by keyword (e.g. BPLO, Tax, Medical, Permit)...">
             </div>
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                <a href="#departmentsList" class="btn btn-sm btn-outline-light rounded-pill px-3"><i class='bx bx-grid-alt me-1'></i> Browse 8 Departments</a>
+                <a href="#appointment" class="btn btn-sm btn-gold rounded-pill px-3 fw-bold"><i class='bx bx-calendar-check me-1'></i> Book Appointment Desk</a>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Filter Navigation Tabs -->
-<div class="services-filter-nav py-4 bg-light border-bottom sticky-top" style="top: 56px; z-index: 1020;">
+<!-- Filter Navigation Tabs (In-flow, clean and non-sticky to avoid scroll clutter) -->
+<div class="services-filter-nav py-3 bg-white border-bottom shadow-xs mb-3" id="departmentsList">
     <div class="container">
         <div class="d-flex flex-wrap gap-2 justify-content-center">
-            <button class="nav-link active service-filter-btn" data-category="all">All Departments</button>
+            <button class="nav-link active service-filter-btn" data-category="all">All Departments (8)</button>
             <button class="nav-link service-filter-btn" data-category="business">Business &amp; Taxes</button>
             <button class="nav-link service-filter-btn" data-category="health">Health &amp; Medical</button>
             <button class="nav-link service-filter-btn" data-category="social">Social Welfare</button>
@@ -84,6 +88,12 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
                         </div>
                     </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <small class="text-muted"><i class='bx bx-check-shield text-success me-1'></i> Official Front-line Desk</small>
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-quick-book" data-service="BPLO - Business Permit Application">
+                            <i class='bx bx-calendar-plus me-1'></i> Book Appointment
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -115,6 +125,12 @@ require_once __DIR__ . '/includes/header.php';
                                 <span class="badge bg-light text-dark border">Requires Deed of Sale &amp; Title</span>
                             </div>
                         </div>
+                    </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <small class="text-muted"><i class='bx bx-check-shield text-success me-1'></i> Official Front-line Desk</small>
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-quick-book" data-service="City Assessor - Real Property Tax Assessment">
+                            <i class='bx bx-calendar-plus me-1'></i> Book Appointment
+                        </button>
                     </div>
                 </div>
             </div>
@@ -148,10 +164,13 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
                         </div>
                     </div>
-                    <div class="mt-3">
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <a href="assets/pdf/CCMC – Rate of Services.pdf" target="_blank" class="btn btn-sm btn-outline-primary">
-                            <i class='bx bx-download me-1'></i> Download Complete CCMC Rate of Services PDF
+                            <i class='bx bx-download me-1'></i> Download Rate of Services PDF
                         </a>
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-quick-book" data-service="CCMC - Outpatient Medical Consultation">
+                            <i class='bx bx-calendar-plus me-1'></i> Book OPD Appointment
+                        </button>
                     </div>
                 </div>
             </div>
@@ -185,6 +204,12 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
                         </div>
                     </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <small class="text-muted"><i class='bx bx-check-shield text-success me-1'></i> Official Sanitation Desk</small>
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-quick-book" data-service="City Health - Health Card &amp; Sanitation">
+                            <i class='bx bx-calendar-plus me-1'></i> Book Sanitation Desk
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -216,6 +241,12 @@ require_once __DIR__ . '/includes/header.php';
                                 <span class="badge bg-light text-dark border">Certificate of Indigency</span>
                             </div>
                         </div>
+                    </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <small class="text-muted"><i class='bx bx-check-shield text-success me-1'></i> Crisis Assistance Intake</small>
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-quick-book" data-service="DSWS - Social Financial Assistance">
+                            <i class='bx bx-calendar-plus me-1'></i> Book DSWS Intake
+                        </button>
                     </div>
                 </div>
             </div>
@@ -249,6 +280,12 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
                         </div>
                     </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <small class="text-muted"><i class='bx bx-check-shield text-success me-1'></i> Traffic Adjudication Window</small>
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-quick-book" data-service="CCTO - Traffic Violation Clearance">
+                            <i class='bx bx-calendar-plus me-1'></i> Book Traffic Clearance
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -280,6 +317,12 @@ require_once __DIR__ . '/includes/header.php';
                                 <span class="badge bg-light text-dark border">Public Hotline 911</span>
                             </div>
                         </div>
+                    </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <small class="text-muted"><i class='bx bx-check-shield text-success me-1'></i> Engineering &amp; Works Desk</small>
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-quick-book" data-service="DEPW - Building &amp; Infrastructure Clearance">
+                            <i class='bx bx-calendar-plus me-1'></i> Book Clearance Window
+                        </button>
                     </div>
                 </div>
             </div>
@@ -313,44 +356,53 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
                         </div>
                     </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <small class="text-muted"><i class='bx bx-check-shield text-success me-1'></i> Livelihood &amp; Training Desk</small>
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-quick-book" data-service="BPLO - Business Permit Application">
+                            <i class='bx bx-calendar-plus me-1'></i> Book Livelihood Inquiries
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Right Column: Online Appointment Booking Box -->
         <div class="col-lg-4" id="appointment">
-            <div class="appointment-booking-box sticky-top" style="top: 140px;">
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <i class='bx bx-calendar-check fs-2 text-warning'></i>
+            <div class="appointment-booking-box sticky-sidebar">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="p-2 bg-warning text-dark rounded-circle fs-4 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                        <i class='bx bx-calendar-check'></i>
+                    </div>
                     <div>
-                        <h4 class="fw-bold mb-0 text-white">Book Appointment</h4>
+                        <h5 class="fw-bold mb-0 text-white">Book Appointment</h5>
                         <small class="text-white-50">Skip the queue at City Hall</small>
                     </div>
                 </div>
 
-                <p class="small text-white-50 mb-3">
-                    Select your preferred department and timeslot. You will immediately receive an official reference code to present at the desk.
+                <p class="small text-white-50 mb-3" style="font-size: 0.775rem; line-height: 1.35;">
+                    Select your preferred department and timeslot to receive an instant official reference code.
                 </p>
 
                 <form id="appointmentForm">
-                    <div class="mb-3">
-                        <label class="form-label text-white small fw-bold">Full Citizen Name</label>
-                        <input type="text" name="citizen_name" class="form-control" placeholder="e.g. Maria Santos" value="<?= e($citizen['user_username'] ?? ''); ?>" required>
+                    <div class="mb-2">
+                        <label class="form-label" for="aptCitizenName">Full Citizen Name</label>
+                        <input type="text" id="aptCitizenName" name="citizen_name" class="form-control" placeholder="e.g. Maria Santos" value="<?= e($citizen['user_username'] ?? ''); ?>" required>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label text-white small fw-bold">Email Address</label>
-                        <input type="email" name="email" class="form-control" placeholder="name@example.com" value="<?= e($citizen['user_email'] ?? ''); ?>" required>
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            <label class="form-label" for="aptEmail">Email Address</label>
+                            <input type="email" id="aptEmail" name="email" class="form-control" placeholder="name@email.com" value="<?= e($citizen['user_email'] ?? ''); ?>" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" for="aptPhone">Mobile Phone</label>
+                            <input type="tel" id="aptPhone" name="phone" class="form-control" placeholder="0917-000-0000" required>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label text-white small fw-bold">Mobile Phone Number</label>
-                        <input type="tel" name="phone" class="form-control" placeholder="0917-000-0000" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-white small fw-bold">Select Department / Service</label>
-                        <select name="service" class="form-select" required>
+                    <div class="mb-2">
+                        <label class="form-label" for="aptService">Department / Service</label>
+                        <select id="aptService" name="service" class="form-select" required>
                             <option value="">-- Choose City Service --</option>
                             <option value="BPLO - Business Permit Application">BPLO - Business Permit Application</option>
                             <option value="BPLO - Business Permit Renewal">BPLO - Business Permit Renewal</option>
@@ -364,14 +416,14 @@ require_once __DIR__ . '/includes/header.php';
                         </select>
                     </div>
 
-                    <div class="row g-2 mb-3">
+                    <div class="row g-2 mb-2">
                         <div class="col-6">
-                            <label class="form-label text-white small fw-bold">Preferred Date</label>
-                            <input type="date" name="date" class="form-control" min="<?= date('Y-m-d'); ?>" required>
+                            <label class="form-label" for="aptDate">Preferred Date</label>
+                            <input type="date" id="aptDate" name="date" class="form-control" min="<?= date('Y-m-d'); ?>" required>
                         </div>
                         <div class="col-6">
-                            <label class="form-label text-white small fw-bold">Timeslot</label>
-                            <select name="time" class="form-select" required>
+                            <label class="form-label" for="aptTime">Timeslot</label>
+                            <select id="aptTime" name="time" class="form-select" required>
                                 <option value="8:30 AM - 10:00 AM">8:30 AM - 10:00 AM</option>
                                 <option value="10:00 AM - 11:30 AM">10:00 AM - 11:30 AM</option>
                                 <option value="1:00 PM - 2:30 PM">1:00 PM - 2:30 PM</option>
@@ -381,13 +433,16 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label text-white small fw-bold">Additional Notes (Optional)</label>
-                        <textarea name="notes" class="form-control" rows="2" placeholder="Specific documents or inquiry details..."></textarea>
+                        <label class="form-label" for="aptNotes">Additional Notes (Optional)</label>
+                        <textarea id="aptNotes" name="notes" class="form-control" rows="1" placeholder="Specific documents or inquiry details..."></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-gold w-100 py-2 fw-bold">
-                        <i class='bx bx-calendar-check me-1'></i> Confirm City Hall Appointment
+                    <button type="submit" class="btn btn-gold w-100 py-2 fw-bold shadow-sm">
+                        <i class='bx bx-calendar-check me-1'></i> Confirm Appointment
                     </button>
+                    <div class="text-center mt-2">
+                        <small class="text-white-50" style="font-size: 0.7rem;"><i class='bx bx-shield-quarter me-1'></i> ARTA Compliant &bull; No Noon Break</small>
+                    </div>
                 </form>
 
                 <div id="appointmentResult" style="display: none;"></div>

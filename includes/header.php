@@ -51,7 +51,7 @@ $citizen = current_user();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Core Custom Design System CSS -->
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/main.css?v=<?= file_exists(__DIR__ . '/../assets/css/main.css') ? filemtime(__DIR__ . '/../assets/css/main.css') : time(); ?>">
     
     <!-- Leaflet.js Mapping Library (loaded on pages with maps) -->
     <?php if (!empty($includeLeaflet)): ?>
@@ -60,7 +60,7 @@ $citizen = current_user();
 
     <!-- Page Specific Stylesheet (if provided) -->
     <?php if (!empty($customCss)): ?>
-        <link rel="stylesheet" href="<?= e($customCss); ?>">
+        <link rel="stylesheet" href="<?= e($customCss); ?>?v=<?= file_exists(__DIR__ . '/../' . $customCss) ? filemtime(__DIR__ . '/../' . $customCss) : time(); ?>">
     <?php endif; ?>
 </head>
 <body>
@@ -85,12 +85,9 @@ $citizen = current_user();
                     <span class="d-none d-sm-inline">Philippine Standard Time:</span>
                     <strong id="pst-live-clock">Loading PST...</strong>
                 </div>
-                <div class="a11y-toggles d-flex align-items-center gap-1">
+                <div class="a11y-toggles d-flex align-items-center">
                     <button id="btn-toggle-contrast" class="btn btn-sm btn-outline-light py-0 px-2 a11y-btn" title="Toggle High Contrast Mode" aria-label="Toggle High Contrast">
-                        <i class='bx bx-adjust'></i>
-                    </button>
-                    <button id="btn-toggle-font" class="btn btn-sm btn-outline-light py-0 px-2 a11y-btn" title="Increase Font Size" aria-label="Increase Font Size">
-                        <span style="font-size: 11px; font-weight: bold;">A+</span>
+                        <i class='bx bx-adjust me-1'></i> Contrast
                     </button>
                 </div>
             </div>

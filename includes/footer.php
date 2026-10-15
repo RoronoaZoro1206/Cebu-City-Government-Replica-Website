@@ -151,7 +151,7 @@ declare(strict_types=1);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core Main JS -->
-    <script src="assets/js/main.js"></script>
+    <script src="assets/js/main.js?v=<?= file_exists(__DIR__ . '/../assets/js/main.js') ? filemtime(__DIR__ . '/../assets/js/main.js') : time(); ?>"></script>
 
     <!-- Leaflet.js Mapping Library (loaded on pages with maps) -->
     <?php if (!empty($includeLeaflet)): ?>
@@ -160,7 +160,7 @@ declare(strict_types=1);
 
     <!-- Page Specific Script (if set) -->
     <?php if (!empty($customJs)): ?>
-        <script src="<?= e($customJs); ?>"></script>
+        <script src="<?= e($customJs); ?>?v=<?= file_exists(__DIR__ . '/../' . $customJs) ? filemtime(__DIR__ . '/../' . $customJs) : time(); ?>"></script>
     <?php endif; ?>
 </body>
 </html>

@@ -1,11 +1,11 @@
-# 🏛️ City Government of Cebu - Official Replica Portal
+# City Government of Cebu - Official Replica Portal
 > **“Ang Kagamhanan sa Dakbayan sa Sugbo — Serbisyong Tinud-anay, Katungod sa Katawhan”**
 
 A modern civic web application and municipal portal replica for the **City Government of Cebu, Philippines**. Built with native PHP and modern responsive CSS/JavaScript. Engineered to run **100% turnkey without requiring XAMPP, Apache, or separate database servers**, while maintaining full support for PostgreSQL and MySQL when configured.
 
 ---
 
-## 🚀 Quick Start (Run Without XAMPP)
+## Quick Start (Run Without XAMPP)
 
 ### Method 1: One-Click Launch (Windows)
 Double-click [`serve.bat`](file:///c:/Users/Roronoa%20Zoro/Documents/GitHub/Cebu-City-Government-Replica-Website/serve.bat) in the root directory.  
@@ -24,7 +24,7 @@ php -S localhost:8000 router.php
 
 ---
 
-## 🔑 Demo Citizen Account
+## Demo Citizen Account
 For testing authenticated citizen features (citizen dashboard, appointment management, comment posting):
 
 | Field | Demo Credential |
@@ -35,7 +35,7 @@ For testing authenticated citizen features (citizen dashboard, appointment manag
 
 ---
 
-## 📂 Project Architecture & Folder Organization
+## Project Architecture & Folder Organization
 
 ```
 Cebu-City-Government-Replica-Website/
@@ -104,7 +104,7 @@ Cebu-City-Government-Replica-Website/
 
 ---
 
-## 🛡️ Codex Security Hardening
+## Codex Security Hardening
 This portal was hardened against common OWASP/CWE web vulnerabilities:
 
 1. **Cross-Site Request Forgery (CSRF)**:
@@ -122,7 +122,7 @@ This portal was hardened against common OWASP/CWE web vulnerabilities:
 
 ---
 
-## 🎨 UI/UX Pro Max Civic Design System
+## UI/UX Pro Max Civic Design System
 - **Color Identity**: Cebu City Royal Navy (`#0B2545`), Golden Sun (`#FDB813`), Crisp Slate (`#F8FAFC`), Alert Red (`#D90429`).
 - **Live PST Clock**: Real-time ticking Philippine Standard Time (UTC+8).
 - **Accessibility (A11y)**: Built-in High Contrast toggle and Font Size scaling preserved via `localStorage`.
@@ -132,7 +132,7 @@ This portal was hardened against common OWASP/CWE web vulnerabilities:
 
 ---
 
-## ⚙️ Optional Database Configuration (`.env`)
+## Optional Database Configuration (`.env`)
 If you wish to connect to an external PostgreSQL or MySQL database instead of the built-in SQLite auto-fallback, create a `.env` file in the root:
 ```env
 DB_DRIVER=pgsql

@@ -262,6 +262,28 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </section>
 
+<!-- Interactive Map Feature Callout -->
+<section class="py-4 bg-light border-top border-bottom">
+    <div class="container">
+        <div class="row align-items-center justify-content-between g-3">
+            <div class="col-lg-8 d-flex align-items-center gap-3">
+                <div class="p-3 bg-primary text-white rounded-3 fs-3 flex-shrink-0 shadow-sm">
+                    <i class='bx bx-map-pin'></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-1 text-dark">Locate Cebu City Government Offices &amp; Emergency Centers</h5>
+                    <p class="text-muted small mb-0">Access our Leaflet interactive GPS map to locate Cebu City Hall, CCMC Emergency Room, CCDRRMO Rescue Command, and CCTO Traffic Office with live driving directions.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="contact-us.php#map-section" class="btn btn-primary px-4 py-2 fw-bold shadow-sm">
+                    <i class='bx bx-map-alt me-1'></i> Open Interactive Map &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Latest City Announcements & News -->
 <section class="py-5 bg-white border-top">
     <div class="container">

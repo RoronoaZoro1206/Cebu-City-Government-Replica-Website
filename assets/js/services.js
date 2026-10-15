@@ -10,7 +10,45 @@ document.addEventListener('DOMContentLoaded', () => {
     initServiceFiltering();
     initServiceSearch();
     initAppointmentBooking();
+    initQuickBookButtons();
 });
+
+function initQuickBookButtons() {
+    const quickBookButtons = document.querySelectorAll('.btn-quick-book');
+    const serviceSelect = document.getElementById('aptService');
+    const appointmentBox = document.getElementById('appointment');
+
+    quickBookButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const serviceName = btn.getAttribute('data-service');
+            if (serviceSelect && serviceName) {
+                for (let option of serviceSelect.options) {
+                    if (option.value && (
+                        option.value.toLowerCase().includes(serviceName.toLowerCase()) || 
+                        serviceName.toLowerCase().includes(option.value.toLowerCase())
+                    )) {
+                        serviceSelect.value = option.value;
+                        // Trigger change event if listeners exist
+                        serviceSelect.dispatchEvent(new Event('change'));
+                        break;
+                    }
+                }
+            }
+
+            if (appointmentBox) {
+                appointmentBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const box = appointmentBox.querySelector('.appointment-booking-box');
+                if (box) {
+                    box.classList.add('border-warning');
+                    setTimeout(() => {
+                        const dateInput = document.getElementById('aptDate');
+                        if (dateInput) dateInput.focus();
+                    }, 500);
+                }
+            }
+        });
+    });
+}
 
 function initServiceFiltering() {
     const filterButtons = document.querySelectorAll('.service-filter-btn');
@@ -103,7 +141,7 @@ function initAppointmentBooking() {
             resultBox.innerHTML = `<i class='bx bx-error me-1'></i> ${err.message || 'An error occurred. Please try again.'}`;
         } finally {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = "<i class='bx bx-calendar-check me-1'></i> Confirm City Hall Appointment";
+            submitBtn.innerHTML = "<i class='bx bx-calendar-check me-1'></i> Confirm Appointment";
         }
     });
 }

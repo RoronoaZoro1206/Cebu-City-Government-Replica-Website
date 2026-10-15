@@ -52,29 +52,20 @@ function initLivePstClock() {
  */
 function initAccessibilityToggles() {
     const contrastBtn = document.getElementById('btn-toggle-contrast');
-    const fontBtn = document.getElementById('btn-toggle-font');
+
+    // Clean up any legacy large-font class or localStorage
+    document.body.classList.remove('large-font');
+    localStorage.removeItem('cebu_large_font');
 
     // Restore contrast preference
     if (localStorage.getItem('cebu_high_contrast') === 'true') {
         document.body.classList.add('high-contrast');
     }
 
-    // Restore font size preference
-    if (localStorage.getItem('cebu_large_font') === 'true') {
-        document.body.classList.add('large-font');
-    }
-
     if (contrastBtn) {
         contrastBtn.addEventListener('click', () => {
             const isHigh = document.body.classList.toggle('high-contrast');
             localStorage.setItem('cebu_high_contrast', isHigh ? 'true' : 'false');
-        });
-    }
-
-    if (fontBtn) {
-        fontBtn.addEventListener('click', () => {
-            const isLarge = document.body.classList.toggle('large-font');
-            localStorage.setItem('cebu_large_font', isLarge ? 'true' : 'false');
         });
     }
 }
@@ -151,6 +142,7 @@ function initGlobalSearch() {
         { title: 'Audited Financial Reports (Full Disclosure)', desc: '2024, 2023, and 2022 quarterly budget execution and audit statements', url: 'transparency.php#financial', icon: 'bx-file' },
         { title: 'Manpower Complement & Personnel Budget', desc: 'Civil service plantilla and job order employee complement reports', url: 'transparency.php#manpower', icon: 'bx-group' },
         { title: 'Book an Online City Hall Appointment', desc: 'Schedule an appointment for BPLO, Assessor, CCMC, or Civil Registrar', url: 'services.php#appointment', icon: 'bx-calendar-check' },
+        { title: 'Interactive City Government Map & Facilities', desc: 'Leaflet GPS locator for Cebu City Hall, CCMC, CCDRRMO, and CCTO', url: 'contact-us.php#map-section', icon: 'bx-map-pin' },
         { title: 'Citizen Inquiries & Direct Feedback', desc: 'Submit inquiries, service commendations, or reports to City Hall', url: 'contact-us.php#feedback', icon: 'bx-message-square-detail' }
     ];
 
