@@ -57,12 +57,6 @@ require_once __DIR__ . '/includes/header.php';
                     <i class='bx bx-log-in me-1'></i> Sign In to Portal
                 </button>
 
-                <div class="demo-credentials-box">
-                    <div class="fw-bold mb-1"><i class='bx bx-info-circle'></i> Demo Citizen Account:</div>
-                    <div>Username: <code>citizen_cebu</code></div>
-                    <div>Password: <code>CebuCity2026!</code></div>
-                </div>
-
                 <div class="auth-footer-links">
                     Don't have a citizen account yet? <br>
                     <a href="register.php">Create Citizen Account</a>
