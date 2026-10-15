@@ -57,6 +57,7 @@
     color: #E2E8F0;
     padding: 10px 0;
     font-size: 0.875rem;
+    overflow: hidden;
 }
 
 .ticker-label {
@@ -70,6 +71,61 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ticker-viewport {
+    flex-grow: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+}
+
+.ticker-track {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+    white-space: nowrap;
+    animation: civicTickerScroll 30s linear infinite;
+    will-change: transform;
+}
+
+.ticker-viewport:hover .ticker-track {
+    animation-play-state: paused;
+}
+
+.ticker-item {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #E2E8F0;
+}
+
+.ticker-separator {
+    color: var(--civic-gold);
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+@keyframes civicTickerScroll {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ticker-track {
+        animation: none;
+        transform: none;
+        white-space: normal;
+        overflow-x: auto;
+    }
 }
 
 /* Quick Services Grid */

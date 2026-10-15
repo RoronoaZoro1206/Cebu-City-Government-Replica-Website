@@ -153,6 +153,11 @@ declare(strict_types=1);
     <!-- Core Main JS -->
     <script src="assets/js/main.js"></script>
 
+    <!-- Leaflet.js Mapping Library (loaded on pages with maps) -->
+    <?php if (!empty($includeLeaflet)): ?>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <?php endif; ?>
+
     <!-- Page Specific Script (if set) -->
     <?php if (!empty($customJs)): ?>
         <script src="<?= e($customJs); ?>"></script>

@@ -59,11 +59,12 @@ if ($action === 'request') {
     $gmailUser = getenv('GMAIL_EMAIL');
     $gmailPass = getenv('GMAIL_APP_PASSWORD');
 
-    if ($gmailUser && $gmailPass && file_exists(dirname(__DIR__) . '/PHPMailer-master/src/PHPMailer.php')) {
+    $phpMailerBase = dirname(__DIR__) . '/includes/PHPMailer-master/src';
+    if ($gmailUser && $gmailPass && file_exists($phpMailerBase . '/PHPMailer.php')) {
         try {
-            require_once dirname(__DIR__) . '/PHPMailer-master/src/Exception.php';
-            require_once dirname(__DIR__) . '/PHPMailer-master/src/PHPMailer.php';
-            require_once dirname(__DIR__) . '/PHPMailer-master/src/SMTP.php';
+            require_once $phpMailerBase . '/Exception.php';
+            require_once $phpMailerBase . '/PHPMailer.php';
+            require_once $phpMailerBase . '/SMTP.php';
 
             $mail = new PHPMailer(true);
             $mail->isSMTP();

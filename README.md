@@ -79,6 +79,10 @@ Cebu-City-Government-Replica-Website/
 │   ├── register_action.php       # Registration with BCrypt Cost 12
 │   └── reset_action.php          # Password Reset Token Generator & Updater
 │
+├── scripts/                      # Maintenance & Utility Scripts
+│   ├── maintenance/              # DB token cleanup, counter fixers, PDF initializers
+│   └── logs/                     # Cleanup & system execution logs
+│
 ├── data/                         # Local Persistent Storage
 │   └── cebu_city.sqlite          # Auto-migrated SQLite Database (Zero-Config)
 │

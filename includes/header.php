@@ -53,6 +53,11 @@ $citizen = current_user();
     <!-- Core Custom Design System CSS -->
     <link rel="stylesheet" href="assets/css/main.css">
     
+    <!-- Leaflet.js Mapping Library (loaded on pages with maps) -->
+    <?php if (!empty($includeLeaflet)): ?>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <?php endif; ?>
+
     <!-- Page Specific Stylesheet (if provided) -->
     <?php if (!empty($customCss)): ?>
         <link rel="stylesheet" href="<?= e($customCss); ?>">
@@ -64,7 +69,12 @@ $citizen = current_user();
     <div class="govph-topbar">
         <div class="container d-flex flex-wrap justify-content-between align-items-center py-1">
             <div class="d-flex align-items-center gap-3 topbar-left">
-                <span class="flag-symbol" aria-hidden="true">🇵🇭</span>
+                <svg class="govph-flag-svg" width="22" height="15" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Philippine National Flag" role="img" style="border-radius: 2px; vertical-align: middle; box-shadow: 0 0 1px rgba(0,0,0,0.5);">
+                    <rect width="24" height="8" fill="#0038A8"/>
+                    <rect y="8" width="24" height="8" fill="#CE1126"/>
+                    <polygon points="0,0 12,8 0,16" fill="#FFFFFF"/>
+                    <circle cx="4.5" cy="8" r="1.8" fill="#FCD116"/>
+                </svg>
                 <span class="govph-brand">GOVPH &bull; Republic of the Philippines</span>
                 <span class="d-none d-md-inline text-muted-ph">|</span>
                 <span class="d-none d-md-inline text-gold">Official Civic Portal</span>

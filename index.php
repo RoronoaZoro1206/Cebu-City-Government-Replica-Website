@@ -19,14 +19,17 @@ require_once __DIR__ . '/includes/header.php';
 <!-- Live Civic Advisory Ticker -->
 <div class="civic-ticker-bar">
     <div class="container d-flex align-items-center gap-3">
-        <span class="ticker-label"><i class='bx bxs-megaphone'></i> ADVISORY</span>
-        <div class="flex-grow-1 text-truncate">
-            <marquee behavior="scroll" direction="left" scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
-                📢 Cebu City Government launches unified digital citizen appointments. &bull; 
-                💧 CCDRRMO implements dry season contingency water container distribution in upland barangays. &bull; 
-                💳 Cashless payment kiosks now operational at Cebu City Hall legislative lobby. &bull; 
-                🚑 CCMC 24/7 Outpatient &amp; Emergency Department open to all residents.
-            </marquee>
+        <span class="ticker-label"><i class='bx bxs-megaphone me-1'></i> ADVISORY</span>
+        <div class="ticker-viewport" role="region" aria-label="City Advisories">
+            <div class="ticker-track">
+                <span class="ticker-item"><i class='bx bx-bell text-warning me-1'></i> Cebu City Government launches unified digital citizen appointments.</span>
+                <span class="ticker-separator">&bull;</span>
+                <span class="ticker-item"><i class='bx bx-droplet text-info me-1'></i> CCDRRMO implements dry season contingency water container distribution in upland barangays.</span>
+                <span class="ticker-separator">&bull;</span>
+                <span class="ticker-item"><i class='bx bx-credit-card text-success me-1'></i> Cashless payment kiosks now operational at Cebu City Hall legislative lobby.</span>
+                <span class="ticker-separator">&bull;</span>
+                <span class="ticker-item"><i class='bx bx-plus-medical text-danger me-1'></i> CCMC 24/7 Outpatient &amp; Emergency Department open to all residents.</span>
+            </div>
         </div>
     </div>
 </div>
